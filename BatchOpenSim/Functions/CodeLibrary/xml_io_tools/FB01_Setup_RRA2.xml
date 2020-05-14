@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OpenSimDocument Version="40000">
+   <RRATool name="FB01_RRA">
+   <!--Name of the .osim file used to construct a model.--><!--Replace the model's force set with sets specified in <force_set_files>? If false, the force set is appended to.--><!--List of xml files used to construct a force set for the model.--><!--Directory used for writing results.--><!--Output precision.  It is 8 by default.--><!--Initial time for the simulation.--><!--Final time for the simulation.--><!--Flag indicating whether or not to compute equilibrium values for states other than the coordinates or speeds.  For example, equilibrium muscle fiber lengths or muscle forces.--><!--Maximum number of integrator steps.--><!--Maximum integration step size.--><!--Minimum integration step size.--><!--Integrator error tolerance. When the error is greater, the integrator step size is decreased.--><!--Set of analyses to be run during the investigation.--><!--Controller objects in the model.--><!--XML file (.xml) containing the forces applied to the model as ExternalLoads.--><!--Motion (.mot) or storage (.sto) file containing the desired point trajectories.--><!--Motion (.mot) or storage (.sto) file containing the desired kinematic trajectories.--><!--File containing the tracking tasks. Which coordinates are tracked and with what weights are specified here.--><!--DEPRECATED File containing the constraints on the controls.--><!--Low-pass cut-off frequency for filtering the desired kinematics. A negative value results in no filtering. The default value is -1.0, so no filtering.--><!--Preferred optimizer algorithm (currently support "ipopt" or "cfsqp", the latter requiring the osimCFSQP library.--><!--Flag (true or false) indicating whether or not to make an adjustment in the center of mass of a body to reduced DC offsets in MX and MZ. If true, a new model is written out that has altered anthropometry.--><!--Initial time used when computing average residuals in order to adjust the body's center of mass.  If both initial and final time are set to -1 (their default value) then the main initial and final time settings will be used.--><!--Final time used when computing average residuals in order to adjust the body's center of mass.--><!--Name of the body whose center of mass is adjusted. The heaviest segment in the model should normally be chosen. For a gait model, the torso segment is usually the best choice.--><!--Name of the output model file (.osim) containing adjustments to anthropometry made to reduce average residuals. This file is written if the property adjust_com_to_reduce_residuals is set to true. If a name is not specified, the model is written out to a file called adjusted_model.osim.--><!--True-false flag indicating whether or not to turn on verbose printing for cmc.-->
+	<model_file>C:\Users\richa\Documents\OpenSim 4.0\Metabolix\FullBody\OpenSim_Trunk_102819\OpenSim\FB01_scaled_probed_UMB.osim</model_file>
+      <replace_force_set>true</replace_force_set>
+      <force_set_files>gait2392_RRA_Actuators_High.xml</force_set_files>
+      <results_directory>C:/Users/richa/Documents/OpenSim 4.0/Metabolix/FullBody/OpenSim_Trunk_102819/OpenSim/SetupFiles/../RRA1</results_directory>
+      <output_precision>20</output_precision>
+      <initial_time>0</initial_time>
+      <final_time>3</final_time>
+      <solve_for_equilibrium_for_auxiliary_states>true</solve_for_equilibrium_for_auxiliary_states>
+      <maximum_number_of_integrator_steps>20000</maximum_number_of_integrator_steps>
+      <maximum_integrator_step_size>1</maximum_integrator_step_size>
+      <minimum_integrator_step_size>1e-08</minimum_integrator_step_size>
+      <integrator_error_tolerance>1e-05</integrator_error_tolerance>
+      <AnalysisSet name="Analyses">
+         <objects/>
+         <groups/>
+      </AnalysisSet>
+      <ControllerSet name="Controllers">
+         <objects/>
+         <groups/>
+      </ControllerSet>
+      <external_loads_file>FB01_ExternalLoads_RRA.xml</external_loads_file>
+      <desired_points_file/>
+      <desired_kinematics_file>C:/Users/richa/Documents/OpenSim 4.0/Metabolix/FullBody/OpenSim_Trunk_102819/OpenSim/SetupFiles/../W12_60_1_OpenSim_IK.mot</desired_kinematics_file>
+      <task_set_file>gait2392_RRA_Tasks_Low.xml</task_set_file>
+      <constraints_file>gait2392_RRA_ControlConstraints.xml</constraints_file>
+      <lowpass_cutoff_frequency>6</lowpass_cutoff_frequency>
+      <optimizer_algorithm>ipopt</optimizer_algorithm>
+      <adjust_com_to_reduce_residuals>true</adjust_com_to_reduce_residuals>
+      <initial_time_for_com_adjustment>-1</initial_time_for_com_adjustment>
+      <final_time_for_com_adjustment>-1</final_time_for_com_adjustment>
+      <adjusted_com_body>pelvis</adjusted_com_body>
+      <output_model_file>FB01_scaled_probed_UMB.osim</output_model_file>
+      <use_verbose_printing>false</use_verbose_printing>
+   </RRATool>
+</OpenSimDocument>

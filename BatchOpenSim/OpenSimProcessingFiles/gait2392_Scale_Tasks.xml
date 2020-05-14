@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IKTaskSet name="gait2392_Scale">
+<!--apply = Whether or not this task will be used during inverse kinematics solve.-->
+<!--weight = Weight given to a marker or coordinate for solving inverse kinematics problems.-->
+	<objects>
+		<IKMarkerTask name="R.ASIS">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.ASIS">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.PSIS">		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.PSIS">		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="S2">			<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.TH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.TH2">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.TH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.Knee">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.MKnee">		<apply>false</apply>		<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.SH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.SH2">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.SH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.SH4">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="R.Ankle"> 		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.MAnkle">		<apply>false</apply>		<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.Heel">		<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.MT5">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="R.MT1">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.TH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.TH2">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.TH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.Knee">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.MKnee">		<apply>false</apply>		<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.SH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.SH2">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.SH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.SH4">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="L.Ankle">		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.MAnkle">		<apply>false</apply>		<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.Heel">		<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.MT5">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="L.MT1">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+    </objects>
+</IKTaskSet>

@@ -1,0 +1,8 @@
+
+Exception:
+  Object: ERR- Could not open file Modified_Visual3d_Setup_Scale.xml. It may
+  not exist or you don't have permission to read it.
+  file= E:\projects\src\OpenSim\OpenSim\Common\Object.cpp
+  line= 114
+
+
