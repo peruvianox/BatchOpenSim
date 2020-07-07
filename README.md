@@ -14,8 +14,7 @@ Setup Configuration
 
 Input Requirements:
 - matching .trc and .anc files for each trial recorded (matched by spelling)
-- 
-
+- OpenSim model and set up files for each task (see OpenSimProcessingFiles) 
 
 LICENSE
 
