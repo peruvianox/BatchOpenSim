@@ -35,8 +35,7 @@ You’ll need to arrange your participant ANC and TRC files within a single fold
 Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force plate calibration files (lines 65-74), and set your own coordinate system conversions (lines 245-256).
  
 #### Selecting Time Window to Process
-If you are going to run computed muscle control (CMC) or static optimization (SO), it is helpful to select a small window (<2 seconds) for which to run the simulation. Longer windows may lead to inaccurate results and require high computing power. 
-
+If you are going to run computed muscle control (CMC) or static optimization (SO), it is helpful to select a small window (<2 seconds) over which to run the simulation. Longer windows may lead to inaccurate results and require high computing power. CMC adn SO require a 0.03 s buffer prior to determine inital parameters, thus we add 0.05 s buffer to the start and end of the window. 
 
 ### OpenSim Data processing
 #### Setup Files
