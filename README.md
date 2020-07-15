@@ -28,14 +28,13 @@ First you'll need to download OpenSim 4.0 and then follow the instructions below
  
 Processing Codes can be found at:  https://github.com/peruvianox/BatchOpenSim
  
-### Data Formatting
+#### Data Formatting
 You’ll need to arrange your participant ANC and TRC files within a single folder. Then place all your ANC & TRC files for each trial within the first level of each participant folder. The batch script will create an OpenSim folder and FORCES files.  
  
-### Calibration and Coordinate System 
+#### Calibration and Coordinate System 
 Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force plate calibration files (lines 65-74), and set your own coordinate system conversions (lines 245-256).
  
- 
-### Selecting Time Window to Process
+#### Selecting Time Window to Process
 If you are going to run computed muscle control (CMC) or static optimization (SO), it is helpful to select a small window (<2 seconds) for which to run the simulation. Longer windows may lead to inaccurate results and require high computing power. 
 
 
@@ -65,15 +64,16 @@ Calculate the
 
 ## Overview of Scripts
 - ABL_Batch_OpenSim.m - parent code for batch processing multiple subjects and trails in OpenSim (including scaling, inverse kinematics, residual reduction algorithm, computed muscle control, static optimization, muscle analysis, and inverse dynamics)
-- ABL_Setup_Batch.m
+- ABL_OpenSim_Setup_Batch.m - convert TRC and ANC files from original data formats and coordinate systems to formats usable by OpenSim. Options to identify crossover steps, parse windows from full trial, and add torso markers to lower-body only walking data. 
+- ABL_Scale.m - Scale each subject using anatomical marker definitions to specify segment dimensions along their primary axes. See https://www.youtube.com/watch?v=ZG7wzvQC6eU&t=3083s at 13:45 for specifics
 
 ## OpenSim Resources
 OpenSim Documentation Site
 https://simtk-confluence.stanford.edu:8443/display/OpenSim/Documentation
   
 Informational Videos
-https://www.youtube.com/watch?v=7STRMJefzpI
-https://www.youtube.com/watch?v=ZG7wzvQC6eU&t=3083s 
+- OpenSim Webinar: Tips and Tricks for Data Collection, Scaling and Inverse Kinematics in OpenSim https://www.youtube.com/watch?v=ZG7wzvQC6eU&t=3083s 
+- The Scale Tool: Evaluating the Results https://www.youtube.com/watch?v=7STRMJefzpI
 
 ## License
 
