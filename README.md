@@ -9,23 +9,20 @@
 **Who:** human biomechanics researchers, especially those studying walking while on a dual belt treadmill with embedded force platforms
 
 **How:** as described in ___
-
-
-### Setup Requirements
-- download Opensim (https://simtk.org/projects/opensim) and Matlab (https://www.mathworks.com/products/matlab.html)
-- setup OpenSim API for Matlab, instructions at: https://simtk-confluence.stanford.edu/display/OpenSim/Scripting+with+Matlab
-
-### Input Requrements
-- matching .trc and .anc files for each trial recorded (filenames matched by spelling)
-- OpenSim model and set up files for each task (see OpenSimProcessingFiles folder) 
-
+ 
  
 ## Instructions
 
-### Setup and Code
-Download  BatchOpenSim code at:  https://github.com/peruvianox/BatchOpenSim
+### Setup
+- download Opensim (https://simtk.org/projects/opensim) and Matlab (https://www.mathworks.com/products/matlab.html)
+- setup OpenSim API for Matlab, instructions at: https://simtk-confluence.stanford.edu/display/OpenSim/Scripting+with+Matlab
+- Download  BatchOpenSim code at:  https://github.com/peruvianox/BatchOpenSim
+
+### Inputs
+- matching .trc and .anc files for each trial recorded (filenames matched by spelling)
+- OpenSim model and set up files for each task (see OpenSimProcessingFiles folder) 
  
-#### Format Input Data
+### Format Input Data
 First, build this database by creating a study folder containing folders for each subject. 
 ![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/Study_Folder.PNG)
 
@@ -40,10 +37,10 @@ BatchOpenSim will create a heirarchical structure containing data for each subje
 Going into each subject's "Trials" data, you can then see its folder, type, associated files, ground reaction forces, temporal spatial data, and other info)
 ![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
  
-#### Calibration and Coordinate System 
+### Calibration and Coordinate System 
 Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force plate calibration files (lines 65-74), and set your own coordinate system conversions (lines 245-256).
  
-#### Selecting Time Window to Process
+### Selecting Time Window to Process
 If you are going to run computed muscle control (CMC) or static optimization (SO), it is helpful to select a small window (<2 seconds) over which to run the simulation. Longer windows may lead to inaccurate results and require high computing power. CMC adn SO require a 0.03 s buffer prior to determine inital parameters, thus we add 0.05 s buffer to the start and end of the window. 
 
 ### OpenSim Data processing
