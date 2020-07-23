@@ -13,7 +13,7 @@
 
 ### Setup Requirements
 - download Opensim (https://simtk.org/projects/opensim) and Matlab (https://www.mathworks.com/products/matlab.html)
-- setup OpenSim API, instructions at: https://simtk-confluence.stanford.edu/display/OpenSim/Scripting+with+Matlab
+- setup OpenSim API for Matlab, instructions at: https://simtk-confluence.stanford.edu/display/OpenSim/Scripting+with+Matlab
 
 ### Input Requrements
 - matching .trc and .anc files for each trial recorded (filenames matched by spelling)
@@ -32,12 +32,12 @@ First, build this database by creating a study folder containing folders for eac
 Then place all your ANC & TRC files for each trial within the first level of each participant folder. 
 ![Input Files](https://github.com/peruvianox/BatchOpenSim/blob/master/Input_Files.PNG)
 
-The batch script will convert these files to OpenSim format (.mot). 
+The batch script will create the OpenSim folder, convert all original files to .mot format, and populate the new OpenSim folder with that subject's data. All future modelling results will be saved to each subject's OpenSim folder. 
 
-BatchOpenSim will create a heirarchical structure containing data for each subject, containing: its file path, directory information, demographics, and trials completed. 
+BatchOpenSim will create a heirarchical structure containing data for each subject (called Subjects), containing: its file path, directory information, demographics, and trials completed. 
 ![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/Subject_view.png)
 
-Going into the trials data, you can then see its folder, type, associated files, ground reaction forces, temporal spatial data, and other info)
+Going into each subject's "Trials" data, you can then see its folder, type, associated files, ground reaction forces, temporal spatial data, and other info)
 ![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
  
 #### Calibration and Coordinate System 
