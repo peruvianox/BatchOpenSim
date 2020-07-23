@@ -28,10 +28,22 @@ First you'll need to download OpenSim 4.0 and then follow the instructions below
  
 Processing Codes can be found at:  https://github.com/peruvianox/BatchOpenSim
  
-#### Data Formatting
-You’ll need to arrange your participant ANC (ground reaction forces) and TRC (marker positions) files within a single folder. Then place all your ANC & TRC files for each trial within the first level of each participant folder. The batch script will convert these files to OpenSim format (.mot).  
+#### Format Input Data
+First, build this database by creating a study folder containing folders for each subject. 
+![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/Study_Folder.PNG)
 
-![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
+Then place all your ANC & TRC files for each trial within the first level of each participant folder. 
+![Input Files](https://github.com/peruvianox/BatchOpenSim/blob/master/Input_Files.PNG)
+
+The batch script will convert these files to OpenSim format (.mot). 
+
+BatchOpenSim will create a heirarchical structure containing data for each subject,
+![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/Subject_view.png)
+
+and data for each trial performed by that subject. 
+![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
+
+
  
 #### Calibration and Coordinate System 
 Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force plate calibration files (lines 65-74), and set your own coordinate system conversions (lines 245-256).
@@ -55,13 +67,13 @@ Align ground reaction forces with body dynamics during recorded motions in an it
 Calculate the muscle-tendon unit forces required to generate the recorded movement. 
 
 #### Muscle Analysis
-
+more info coming soon
 
 #### Static Optimization
-Calculate the 
+more info coming soon
 
 #### Inverse Dynamics
-
+more info coming soon
 
 ## Overview of Scripts
 - ABL_Batch_OpenSim.m - parent code for batch processing multiple subjects and trails in OpenSim (including scaling, inverse kinematics, residual reduction algorithm, computed muscle control, static optimization, muscle analysis, and inverse dynamics)
