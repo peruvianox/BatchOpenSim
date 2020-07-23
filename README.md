@@ -29,7 +29,9 @@ First you'll need to download OpenSim 4.0 and then follow the instructions below
 Processing Codes can be found at:  https://github.com/peruvianox/BatchOpenSim
  
 #### Data Formatting
-You’ll need to arrange your participant ANC and TRC files within a single folder. Then place all your ANC & TRC files for each trial within the first level of each participant folder. The batch script will create an OpenSim folder and FORCES files.  
+You’ll need to arrange your participant ANC (ground reaction forces) and TRC (marker positions) files within a single folder. Then place all your ANC & TRC files for each trial within the first level of each participant folder. The batch script will convert these files to OpenSim format (.mot).  
+
+![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
  
 #### Calibration and Coordinate System 
 Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force plate calibration files (lines 65-74), and set your own coordinate system conversions (lines 245-256).
