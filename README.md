@@ -12,7 +12,7 @@
 
 
 ### Setup Requirements
-- downladed Opensim (https://simtk.org/projects/opensim) and Matlab (https://www.mathworks.com/products/matlab.html)
+- download Opensim (https://simtk.org/projects/opensim) and Matlab (https://www.mathworks.com/products/matlab.html)
 - setup OpenSim API, instructions at: https://simtk-confluence.stanford.edu/display/OpenSim/Scripting+with+Matlab
 
 ### Input Requrements
@@ -23,10 +23,7 @@
 ## Instructions
 
 ### Setup and Code
-
-First you'll need to download OpenSim 4.0 and then follow the instructions below to set up the Matlab API. https://simtk-confluence.stanford.edu:8443/display/OpenSim/Scripting+with+Matlab
- 
-Processing Codes can be found at:  https://github.com/peruvianox/BatchOpenSim
+Download  BatchOpenSim code at:  https://github.com/peruvianox/BatchOpenSim
  
 #### Format Input Data
 First, build this database by creating a study folder containing folders for each subject. 
@@ -37,13 +34,11 @@ Then place all your ANC & TRC files for each trial within the first level of eac
 
 The batch script will convert these files to OpenSim format (.mot). 
 
-BatchOpenSim will create a heirarchical structure containing data for each subject,
+BatchOpenSim will create a heirarchical structure containing data for each subject, containing: its file path, directory information, demographics, and trials completed. 
 ![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/Subject_view.png)
 
-and data for each trial performed by that subject. 
+Going into the trials data, you can then see its folder, type, associated files, ground reaction forces, temporal spatial data, and other info)
 ![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
-
-
  
 #### Calibration and Coordinate System 
 Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force plate calibration files (lines 65-74), and set your own coordinate system conversions (lines 245-256).
