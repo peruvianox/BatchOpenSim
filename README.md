@@ -23,7 +23,7 @@
 - OpenSim model and set up files for each task (see OpenSimProcessingFiles folder) 
  
 ### Format Input Data
-First, build this database by creating a study folder containing folders for each subject. 
+First, build a BOS database by creating a study folder containing folders for each subject, like this: 
 ![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/Study_Folder.PNG)
 
 Then place all your ANC & TRC files for each trial within the first level of each participant folder. 
@@ -41,8 +41,8 @@ BatchOpenSim will save a heirarchical structure containing data for each subject
 Going into each subject's "Trials" data, you can then see its folder, type, associated files, ground reaction forces, temporal spatial data, and other info)
 ![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
  
-### Selecting Time Window to Process
-If you are going to run computed muscle control (CMC) or static optimization (SO), it is helpful to select a small window (<2 seconds) over which to run the simulation. Longer windows may lead to inaccurate results and require high computing power. CMC and SO require a 0.03 s buffer to determine inital parameters, so we add 0.05 s to the start and end of the selected window. 
+### Time Window
+If you are going to calculate muscle-tendon unit control (computed muscle control or static optimization), it is helpful to select a small window of time (<2 seconds) over which to run the simulation. Long windows of processing require substantial computing power and may results may be questionable. CMC and SO require a 0.03 s buffer to determine inital parameters, so we add 0.05 s to the start and end of the selected window. 
 
 ### OpenSim Data processing
 #### Setup Files
