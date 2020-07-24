@@ -69,7 +69,7 @@ more info coming soon
 #### Inverse Dynamics
 more info coming soon
 
-## Majro Scripts of BatchOpenSim 
+## Major BOS Functions
 - ABL_Batch_OpenSim.m - parent code for batch processing multiple subjects and trails in OpenSim (including scaling, inverse kinematics, residual reduction algorithm, computed muscle control, static optimization, muscle analysis, and inverse dynamics)
 - ABL_OpenSim_Setup_Batch.m - convert TRC and ANC files from original data formats and coordinate systems to formats usable by OpenSim. Options to identify crossover steps, parse windows from full trial, and add torso markers to lower-body only walking data. 
 - ABL_Scale.m - Scale each subject using anatomical marker definitions to specify segment dimensions along their primary axes. See https://www.youtube.com/watch?v=ZG7wzvQC6eU&t=3083s at 13:45 for specifics
