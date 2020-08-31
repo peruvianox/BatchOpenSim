@@ -23,7 +23,7 @@
  
 ### Format Input Data
 First, build a BOS database by creating a study folder containing folders for each subject, like this: 
-![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/Study_Folder.PNG)
+![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/doc/Study_Folder.PNG)
 
 Then place all your ANC & TRC files for each trial within the first level of each participant folder. 
 ![Input Files](https://github.com/peruvianox/BatchOpenSim/blob/master/Input_Files.PNG)
