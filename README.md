@@ -2,14 +2,13 @@
 
 ## Overview
 
-**What:** Automate processing of walking biomechanical data (markers and ground reaction forces) through OpenSim musculosleletal modelling
+**What:** automate processing of walking biomechanical data (markers and ground reaction forces) through OpenSim musculosleletal modelling
 
 **Why:** automated processing saves time, reduces errors, and improves consistency
 
 **Who:** human biomechanics researchers, especially those studying walking while on a dual belt treadmill with embedded force platforms
 
-**How:** as described in ___
- 
+**How:** as described here: https://www.biorxiv.org/content/10.1101/2020.07.31.230698v1
 
 ## Instructions
 
@@ -42,7 +41,7 @@ Going into each subject's "Trials" data, you can then see its folder, type, asso
 ![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
  
 ### Time Window
-If you are going to calculate muscle-tendon unit control (computed muscle control or static optimization), it is helpful to select a small window of time (<2 seconds) over which to run the simulation. Long windows of processing require substantial computing power and may results may be questionable. CMC and SO require a 0.03 s buffer to determine inital parameters, so we add 0.05 s to the start and end of the selected window. 
+If you are going to calculate muscle-tendon unit control (computed muscle control or static optimization), it is helpful to select a small window of time (<2 seconds) over which to run the simulation. Long windows of processing require substantial computing power and may results may be questionable. CMC and SO require a 0.03 s buffer to determine inital parameters, so we add 0.05 s to the start and end of the selected window. Processing window times are added in the *ABL_OpenSim_SetupBatch.m* file, search for "BestTimes" variable. 
 
 ### OpenSim Data processing
 #### Setup Files
