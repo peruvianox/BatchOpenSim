@@ -2,7 +2,7 @@
 <OpenSimDocument Version="20302">
 	<MarkerSet name="gait2392_Scale">
 	<objects>
-	<Marker name="R.Acromium">
+	<Marker name="R.Acr">
 			<!--Body segment in the model on which the marker resides.-->
 			<body> torso </body>
 			<!--Location of a marker on the body segment.-->
@@ -31,7 +31,7 @@
 				<display_preference> 4 </display_preference>
 			</VisibleObject>
 		</Marker>
-		<Marker name="L.Acromium">
+		<Marker name="L.Acr">
 			<!--Body segment in the model on which the marker resides.-->
 			<body> torso </body>
 			<!--Location of a marker on the body segment.-->
@@ -60,7 +60,7 @@
 				<display_preference> 4 </display_preference>
 			</VisibleObject>
 		</Marker>
-		<Marker name="Clav">				
+		<Marker name="Notch">				
 			<!--Body segment in the model on which the marker resides.-->
 			<body> torso </body>
 			<!--Location of a marker on the body segment.-->
@@ -562,7 +562,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept
 				    fixed in the marker placement step.  i.e. If false, the marker is
 				    allowed to move.-->
-			<fixed> false </fixed>
+			<fixed> true </fixed>
 				<!--Used for displaying a marker in the visuals.-->
 				<VisibleObject name="">
 					<!--Set of geometry files and associated attributes, allow .vtp, .stl,
@@ -591,7 +591,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept
 				    fixed in the marker placement step.  i.e. If false, the marker is
 				    allowed to move.-->
-			<fixed> false </fixed>
+			<fixed> true </fixed>
 				<!--Used for displaying a marker in the visuals.-->
 				<VisibleObject name="">
 					<!--Set of geometry files and associated attributes, allow .vtp, .stl,
@@ -620,7 +620,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept
 				    fixed in the marker placement step.  i.e. If false, the marker is
 				    allowed to move.-->
-			<fixed> false </fixed>
+			<fixed> true </fixed>
 				<!--Used for displaying a marker in the visuals.-->
 				<VisibleObject name="">
 					<!--Set of geometry files and associated attributes, allow .vtp, .stl,
@@ -968,7 +968,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept
 				    fixed in the marker placement step.  i.e. If false, the marker is
 				    allowed to move.-->
-			<fixed> false </fixed>
+			<fixed> true </fixed>
 				<!--Used for displaying a marker in the visuals.-->
 				<VisibleObject name="">
 					<!--Set of geometry files and associated attributes, allow .vtp, .stl,
@@ -997,7 +997,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept
 				    fixed in the marker placement step.  i.e. If false, the marker is
 				    allowed to move.-->
-			<fixed> false </fixed>
+			<fixed> true </fixed>
 				<!--Used for displaying a marker in the visuals.-->
 				<VisibleObject name="">
 					<!--Set of geometry files and associated attributes, allow .vtp, .stl,
@@ -1026,7 +1026,7 @@
 				<!--Flag (true or false) specifying whether or not a marker should be kept
 				    fixed in the marker placement step.  i.e. If false, the marker is
 				    allowed to move.-->
-			<fixed> false </fixed>
+			<fixed> true </fixed>
 				<!--Used for displaying a marker in the visuals.-->
 				<VisibleObject name="">
 					<!--Set of geometry files and associated attributes, allow .vtp, .stl,
