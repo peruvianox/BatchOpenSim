@@ -8,7 +8,6 @@
 % Author: Ricky Pimentel, December 2019
 % Applied Biomechanics Lab, University of North Carolina at Chapel Hill
 
-
 %% Settings
 cd('C:\Users\richa\Documents\Packages\OpenSim\Scripts\BatchOpenSim');
 clear; clc; warning off; dbstop if error;
@@ -18,13 +17,13 @@ Settings.TrialWindows = 'No'; % set to 'No' to run IK for entire duration of eac
 Settings.NumStrides = [1]; % number of strides to check for quality data if results don't pass quality control
 Settings.LowPassKinematicsFilter = 6; % define all kinematics filtering to a specified value in Hz
 
-Settings.Scale = 'No';
-Settings.IK = 'Yes';
-Settings.ID = 'No';
-Settings.RRA = 'No';
-Settings.SO = 'No';
-Settings.CMC = 'No';
-Settings.MA = 'No';
+Settings.Scale = 'No';      % model scaling
+Settings.IK = 'No';            % inverse kinematics
+Settings.ID = 'Yes';          % inverse dynamics
+Settings.RRA = 'No';        % residual reduction analysis
+Settings.CMC = 'No';        % computed muscle control
+Settings.SO = 'No';           % static optimzation
+Settings.MA = 'No';           % muscle analysis
 
 % plot settings
 Settings.PlotIKErrors = 'Yes';
@@ -115,7 +114,7 @@ if strcmp(Settings.Scale, 'Yes')
 end
 
 %% Main Processing Loop
-for subj = 6:7%length(Subjects) % Subject Loop
+for subj = 1:length(Subjects) % Subject Loop
     
     disp(['Processing Subject ' Subjects(subj).name]);
     
@@ -124,9 +123,13 @@ for subj = 6:7%length(Subjects) % Subject Loop
     for trial = find(DynamicTrials) % Trial Loop
         
         %% Create Processing Folders
-        % create ID folder
+        ScaleFolder = strcat(Subjects(subj).Folders.OpenSimFolder, '\ScaleFiles');
+        
+        IKFolder = strcat(Subjects(subj).Folders.OpenSimFolder , '\IK_Files');
+        mkdir(IKFolder); % create IK folder
+        
         IDFolder = strcat(Subjects(subj).Folders.OpenSimFolder , '\ID_Files');
-        mkdir(IDFolder);
+        mkdir(IDFolder); % create ID folder
 
         % create RRA folders
         RRAFolder = strcat(Subjects(subj).Folders.OpenSimFolder , '\RRA_Files');
@@ -134,9 +137,8 @@ for subj = 6:7%length(Subjects) % Subject Loop
         RRAFolder2 = strcat(Subjects(subj).Folders.OpenSimFolder , '\RRA_Files2');
         mkdir(RRAFolder2);
         
-        % CMC folder
         CMCFolder = strcat(Subjects(subj).Folders.OpenSimFolder , '\CMC_Files');
-        mkdir(CMCFolder);
+        mkdir(CMCFolder);  % create CMC folder
         
         %% Initalize Settings for Trial loop
         import org.opensim.modeling.*
@@ -148,53 +150,7 @@ for subj = 6:7%length(Subjects) % Subject Loop
         SubjName = Subjects(subj).name;
         fullpath = fullfile(Subjects(subj).Folders.OpenSimFolder, MarkerFile);
         GRFtrialname = strcat(Subjects(subj).Folders.OpenSimFolder, '\', Subjects(subj).Trials(trial).files.OpenSimGRF);
-        
-        %% Use trial windows - not currently necessary
-        %         if strcmp(Settings.TrialWindows, 'Yes')
-        %             markerData = MarkerData(fullpath);  % Get trc data to determine time range
-        %             % Get start and end time of each stride for RRA and CMC
-        %
-        %             % add small time window on to the start and end to offset CMC delay of 0.03 s
-        %             Window = 0.05;
-        %
-        %             % LEFT STRIDE
-        %             L_Strikes = Subjects(subj).Trials(trial).TSData.L_Strike(:,2);
-        %             L_Inds = find(L_Strikes >  Subjects(subj).Trials(trial).Times.StartWindow, Settings.NumStrides);
-        %             % make sure time starts after 1 second into the trial
-        %             if L_Strikes(L_Inds(1)) < 1
-        %                 L_Inds = L_Inds + 1;
-        %             end
-        %             % make sure strides arent crossover steps
-        %             while sum(L_Inds == Subjects(subj).Trials(trial).Cross.L_Stride) > 0
-        %                 L_Inds = L_Inds + 1;
-        %             end
-        %             Subjects(subj).Trials(trial).Times.Start_Left = L_Strikes(L_Inds) - Window;
-        %             Subjects(subj).Trials(trial).Times.End_Left = L_Strikes(L_Inds+1) + Window;
-        %
-        %             % RIGHT STRIDE
-        %             R_Strikes = Subjects(subj).Trials(trial).TSData.R_Strike(:,2);
-        %             R_Inds = find(R_Strikes >  Subjects(subj).Trials(trial).Times.StartWindow, Settings.NumStrides);
-        %             % make sure time starts after 1 second into the trial
-        %             if R_Strikes(R_Inds(1)) < 1
-        %                 R_Inds = R_Inds + 1;
-        %             end
-        %             % make sure strides arent crossover steps
-        %             while sum(R_Inds == Subjects(subj).Trials(trial).Cross.R_Stride) > 0
-        %                 R_Inds = R_Inds + 1;
-        %             end
-        %             Subjects(subj).Trials(trial).Times.Start_Right = R_Strikes(R_Inds) - Window;
-        %             Subjects(subj).Trials(trial).Times.End_Right = R_Strikes(R_Inds+1) + Window;
-        %
-        %             % define overall start and end time for IK (all strides)
-        %             Subjects(subj).Trials(trial).Times.Start_IK = ...
-        %                 min([Subjects(subj).Trials(trial).Times.Start_Left(1), Subjects(subj).Trials(trial).Times.Start_Right(1)]);
-        %             Subjects(subj).Trials(trial).Times.End_IK = ...
-        %                 max([Subjects(subj).Trials(trial).Times.End_Left(end), Subjects(subj).Trials(trial).Times.End_Right(end)]);
-        %
-        %         else % use full trial time
-        %             Subjects(subj).Trials(trial).initial_time = markerData.getStartFrameTime();
-        %             Subjects(subj).Trials(trial).final_time = markerData.getLastFrameTime();
-        %         end
+
         
         %% IK
         import org.opensim.modeling.*
@@ -203,9 +159,7 @@ for subj = 6:7%length(Subjects) % Subject Loop
         if strcmp(Settings.IK, 'Yes')
             tic; 
             
-            % create IK folder
-            IKFolder = strcat(Subjects(subj).Folders.OpenSimFolder , '\IK_Files');
-            mkdir(IKFolder);
+
             
             % copy generic setup XML file
             Orig.IK_Setup = strcat(GenericFilePath, '\', GenericDir(contains({GenericDir.name}, 'Setup_IK.xml')).name);
@@ -297,7 +251,8 @@ for subj = 6:7%length(Subjects) % Subject Loop
         ExtLdsXML.ExternalLoads.objects.ExternalForce(2).data_source_name = xls;
         ExtLdsXML.ExternalLoads.objects.ExternalForce(2).torque_identifier = '1_ground_torque';
         ExtLdsXML.ExternalLoads.datafile = GRFtrialname;
-        ExtLdsXML.ExternalLoads.external_loads_model_kinematics_file = IKfile.Output;
+        ikFile = [IKFolder '\' TrialName '_IK.mot'];
+        ExtLdsXML.ExternalLoads.external_loads_model_kinematics_file = ikFile;
         ExtLdsXML.ExternalLoads.lowpass_cutoff_frequency_for_load_kinematics = ...
             Settings.LowPassKinematicsFilter; % update low pass filter for kinematics
         ExtLdsTrial = strcat(RRAfile.ExternalLoads(1:end-4), '_', TrialName, '.xml'); % name trial-specific external loads XML file
@@ -306,86 +261,51 @@ for subj = 6:7%length(Subjects) % Subject Loop
         
         %% Inverse Dynamics
         if strcmp(Settings.ID, 'Yes')
+            import org.opensim.modeling.*
+            import java.io.*
             % copy over generic files into general ID folder
             Orig.ID_Setup = strcat(GenericFilePath, '\', GenericDir(contains({GenericDir.name}, 'ID_Setup')).name);
             IDfile.Setup = strcat(IDFolder, '\', Subjects(subj).name, '_Setup_ID.xml');
             copyfile(Orig.ID_Setup , IDfile.Setup);  % ID setup file
             
-            
-            % ID control contraints
-            if strcmp(Settings.LeftLeg, 'Yes')
-                % create trial specific ID folder
-                IDTrialFolder = strcat(IDFolder, '\', TrialName, '\Left_1');
-                mkdir(IDTrialFolder);
-                
-                % no filter on Q-file kinematics
-                
-                % % load ID2 xml and change attributes
-                [idXML, idRootName, ~] = xml_read(IDfile.Setup);
-                
-                RRA2Dir = dir(RRATrialFolder);
-                % call for new model and results directory
-                idXML.InverseDynamicsTool.model_file = strcat(RRAFolder2, '\', Subjects(subj).name, '_RRA_AdjPost2.osim');  % use model output from IK
-                idXML.InverseDynamicsTool.results_directory = IDTrialFolder;
-                % same actuators, tasks, and external loads files
-                idXML.InverseDynamicsTool.external_loads_file = ExtLdsTrial;
-                % % update ID settings for specific trial
-                % set for first left gait cycle
-                Ind = find(Subjects(subj).Trials(trial).TSData.L_Strike(:,2) > Subjects(subj).Trials(trial).initial_time, 3);
-                L_Start = Subjects(subj).Trials(trial).TSData.L_Strike(Ind(1), 2) - 0.05;
-                L_End = Subjects(subj).Trials(trial).TSData.L_Strike(Ind(1)+1, 2) + 0.05;
-                idXML.InverseDynamicsTool.time_range = [L_Start,L_End]; % start time
-                RRA2KinematicsQ = strcat(RRATrialFolder, '\', RRA2Dir(contains({RRA2Dir.name}, 'Kinematics_q.sto')).name);
-                idXML.InverseDynamicsTool.coordinates_file = RRA2KinematicsQ;
-                idXML.InverseDynamicsTool.lowpass_cutoff_frequency = Settings.LowPassKinematicsFilter;
-                
-                %                 idXML.InverseDynamicsTool.output_model_file = strcat(Subjects(subj).name, '_ID_Adj.osim'); % output model
-                idXML.InverseDynamicsTool.ATTRIBUTE = strcat(Subjects(subj).name, '_ID');
-                IDfile.Setup = strcat(IDFolder, '\', Subjects(subj).name, '_Setup_ID.xml');
-                IDfile.Trial = strcat(IDfile.Setup(1:end-4), '_', MarkerFile(1:end-12), '.xml'); % name trial-specific ID setup XML file
-                xml_write(IDfile.Trial, idXML, idRootName);
-                
-                inversedynamics = InverseDynamicsTool(IDfile.Trial); % specify new
-                inversedynamics.run(); % run ID
-            end
-            
-            
-            % create trial specific ID folder
-            IDTrialFolder = strcat(IDFolder, '\', TrialName, '\Right_1');
-            mkdir(IDTrialFolder);
-            
-            % no filter on Q-file kinematics
-            
+            % set model
+            OutputModelFile = strcat(Subjects(subj).name, '_Scaled.osim');
+            model = Model(strcat(ScaleFolder, '\', OutputModelFile)); % load scaled model for IK
+            model.initSystem(); % initialize model
+
             % % load ID2 xml and change attributes
             [idXML, idRootName, ~] = xml_read(IDfile.Setup);
-            
-            RRA2Dir = dir(RRATrialFolder);
+
             % call for new model and results directory
-            idXML.InverseDynamicsTool.model_file = strcat(RRAFolder2, '\', Subjects(subj).name, '_RRA_AdjPost2.osim');  % use model output from IK
-            idXML.InverseDynamicsTool.results_directory = IDTrialFolder;
+            idXML.InverseDynamicsTool.model_file = strcat(ScaleFolder, '\', OutputModelFile);  % use same model as IK
+            idXML.InverseDynamicsTool.results_directory = IDFolder;
             % same actuators, tasks, and external loads files
             idXML.InverseDynamicsTool.external_loads_file = ExtLdsTrial;
-            % % update ID settings for specific trial
-            % set for first left gait cycle
-            Ind = find(Subjects(subj).Trials(trial).TSData.R_Strike(:,2) > Subjects(subj).Trials(trial).initial_time, 3);
-            R_Start = Subjects(subj).Trials(trial).TSData.R_Strike(Ind(1), 2) - 0.05;
-            R_End = Subjects(subj).Trials(trial).TSData.R_Strike(Ind(1)+1, 2) + 0.05;
-            idXML.InverseDynamicsTool.time_range = [R_Start, R_End]; % start time
-            idXML.InverseDynamicsTool.lowpass_cutoff_frequency = Settings.LowPassKinematicsFilter;
-            
-            %             idXML.InverseDynamicsTool.output_model_file = strcat(Subjects(subj).name, '_ID_Adj.osim'); % output model
+            idXML.InverseDynamicsTool.output_gen_force_file = [TrialName '_ID.sto'];
+
+            % ID start and end time
+            trc = Osim.readTRC(fullpath);
+            Subjects(subj).Trials(trial).Times.Start_ID = trc.Time(1);
+            Subjects(subj).Trials(trial).Times.End_ID = trc.Time(end);
+            Start = Subjects(subj).Trials(trial).Times.Start_ID;
+            End = Subjects(subj).Trials(trial).Times.End_ID;
+            idXML.InverseDynamicsTool.time_range = [Start,End]; 
+            % kinematics settings
+            idXML.InverseDynamicsTool.coordinates_file = strcat(IKFolder, '\', TrialName, '_IK.mot');
             idXML.InverseDynamicsTool.ATTRIBUTE = strcat(Subjects(subj).name, '_ID');
             IDfile.Setup = strcat(IDFolder, '\', Subjects(subj).name, '_Setup_ID.xml');
             IDfile.Trial = strcat(IDfile.Setup(1:end-4), '_', MarkerFile(1:end-12), '.xml'); % name trial-specific ID setup XML file
             xml_write(IDfile.Trial, idXML, idRootName);
-            
-            inversedynamics = InverseDynamicsTool(IDfile.Trial); % specify new
-            try
-                inversedynamics.run(); % run ID
-            catch
-                FailedID(subj,trial) =1;
-            end
+
+            inversedynamics = InverseDynamicsTool(IDfile.Trial); % initialize ID tool
+            disp(['Running ID on subject ' Subjects(subj).name '    Trial   ' TrialName]); 
+            inversedynamics.run(); % run ID
+
         end
+        
+        %% Rank Gait Cycles
+        % to identify representative gait cycles ripe for muscle-level simulations
+        
         
         %% Copy Over Files for RRA and CMC
         
