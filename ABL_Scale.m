@@ -63,13 +63,13 @@ for subj = 1:length(Subjects)
     %     ScaleEnd = Subjects(subj).Trials(StaticTrialNum).Times.TRC(3);
     
     % ModelScaler
-    scaleXML.ScaleTool.ModelScaler.marker_file = StaticVirtualFile;
+    scaleXML.ScaleTool.ModelScaler.marker_file = [Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4) '_Virtual.trc'];
     OutputModelFile = strcat(Subjects(subj).name, '_Scaled.osim');
     scaleXML.ScaleTool.ModelScaler.output_model_file = OutputModelFile;
     %     scaleXML.ScaleTool.ModelScaler.time_range = [ScaleStart ScaleEnd];
     
     % MarkerPlacer
-    scaleXML.ScaleTool.MarkerPlacer.marker_file = StaticVirtualFile;
+    scaleXML.ScaleTool.MarkerPlacer.marker_file = [Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4) '_Virtual.trc'];
     scaleXML.ScaleTool.MarkerPlacer.output_model_file = OutputModelFile;
     %     scaleXML.ScaleTool.MarkerPlacer.time_range = [ScaleStart ScaleEnd];
     scaleXML.ScaleTool.MarkerPlacer.output_motion_file = strcat(Subjects(subj).name, '_Scale_Motion.sto');
