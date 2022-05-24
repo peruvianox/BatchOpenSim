@@ -17,12 +17,17 @@ for subj = 1:length(Subjects)
     
     % make virtual markers and copy into scale folder
     StaticMarkerFile = strcat(Subjects(subj).Folders.OpenSimFolder, '\', ...
-        Subjects(subj).Trials(StaticTrials).files.OpenSimTRC);
+        Subjects(subj).Trials(StaticTrials).files.OpenSimTRC); 
+    if exist(StaticMarkerFile, 'file') == 0
+        StaticMarkerFile = strcat(Subjects(subj).Folders.path, '\HJC\', ...
+        Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4),'_hjc.trc'); 
+    end
     StaticVirtualFile = [ScaleFolder '\' Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4) '_Virtual.trc'];
     Osim.MakeVirtualMkr(StaticMarkerFile, StaticVirtualFile);
-    %      copyfile([StaticMarkerFile(1:end-4) '_Virtual.trc'], );
     
     disp(strcat('Scaling ', Subjects(subj).name));
+    
+    cd(ScaleFolder);
     
     
     %% Prep To Scale - Define inputs & outputs
@@ -38,6 +43,8 @@ for subj = 1:length(Subjects)
     % Load the model and initialize
     model = Model(fullfile(Orig.Model));
     model.initSystem();
+    
+
     
     % copy over original markerset file
     Orig.MkrSetFile = strcat(GenericFilePath, '\',...
@@ -57,11 +64,6 @@ for subj = 1:length(Subjects)
     scaleXML.ScaleTool.GenericModelMaker.model_file = 'gait2392_Scale_ABLMarkerSet_UMBprobed_locked.osim';
     scaleXML.ScaleTool.GenericModelMaker.marker_set_file = strcat(Subjects(subj).name, '_MkrSet.xml');
     
-    % only use first 3 frames from static trial
-    %     StaticTrialNum = contains({Subjects(subj).Trials.type}, 'static');
-    %     ScaleStart = Subjects(subj).Trials(StaticTrialNum).Times.TRC(1);
-    %     ScaleEnd = Subjects(subj).Trials(StaticTrialNum).Times.TRC(3);
-    
     % ModelScaler
     scaleXML.ScaleTool.ModelScaler.marker_file = [Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4) '_Virtual.trc'];
     OutputModelFile = strcat(Subjects(subj).name, '_Scaled.osim');
@@ -80,42 +82,46 @@ for subj = 1:length(Subjects)
     SetupScale = strcat(ScaleFolder, '\', Subjects(subj).name, '_Setup_Scale.xml');
     xml_write(SetupScale, scaleXML, scaleRootName);
     
-    scale = ScaleTool(SetupScale); % open scaling tool with new attributes
     
-    % Run Scaling and 
-    scale.run(); % run scaling
-    
-    % save printed results in opensim log file
-    FID = fopen('opensim.log');
-    TXT = textscan(FID, '%s');
-    % look for each subject's model scaling
-    for i = 1:length(TXT{1})
-        if contains(TXT{1}(i), {'Deleted'}) &&  ...
-                contains(TXT{1}(i+2), {'unused'}) && contains(TXT{1}(i+3), {'markers'})...
-                && contains(TXT{1}(i+6), {char(Subjects(subj).name)})
-            ind = i;
-            break
-        end
-    end
-    % extract marker error locations
-    for i = ind:ind+50
-        if contains(TXT{1}(i), {'total'}) && contains(TXT{1}(i+1), {'square'}) && ...
-                contains(TXT{1}(i+2), {'error'}) && contains(TXT{1}(i+3), {'='})
-            Ind = i;
-            break
-        end
-    end
-    
-    % save scale sets
-    
-    % save marker errors
-    Subjects(subj).Trials(StaticTrials).ScaleErr.TotalSqErr = str2double(TXT{1}(Ind+4));
-    Subjects(subj).Trials(StaticTrials).ScaleErr.RMSErr = str2double(TXT{1}(Ind+9));
-    Subjects(subj).Trials(StaticTrials).ScaleErr.MaxErr = str2double(TXT{1}(Ind+12));
-    Subjects(subj).Trials(StaticTrials).ScaleErr.MaxMkr = TXT{1}(Ind+13);
-    
-    disp(['Total Square Error = ' TXT{1}(Ind+4)]);
-    disp(' ');
+    %% Run Scaling
+    command = ['opensim-cmd run-tool ' SetupScale];
+    system(command); 
+%     scale = ScaleTool(SetupScale); % open scaling tool with new attributes
+%     scale.run(); % run scaling
+
+            
+    %% save printed results in opensim log file
+%     FID = fopen('opensim.log');
+%     TXT = textscan(FID, '%s');
+%     fclose(FID);
+%     % look for each subject's model scaling
+%     for i = 1:length(TXT{1})
+%         if contains(TXT{1}(i), {'Deleted'}) &&  ...
+%                 contains(TXT{1}(i+2), {'unused'}) && contains(TXT{1}(i+3), {'markers'})...
+%                 && contains(TXT{1}(i+6), {char(Subjects(subj).name)})
+%             ind = i;
+%             break
+%         end
+%     end
+%     % extract marker error locations
+%     for i = ind:ind+50
+%         if contains(TXT{1}(i), {'total'}) && contains(TXT{1}(i+1), {'square'}) && ...
+%                 contains(TXT{1}(i+2), {'error'}) && contains(TXT{1}(i+3), {'='})
+%             Ind = i;
+%             break
+%         end
+%     end
+%     
+%     % save scale sets
+%     
+%     % save marker errors
+%     Subjects(subj).Trials(StaticTrials).ScaleErr.TotalSqErr = str2double(TXT{1}(Ind+4));
+%     Subjects(subj).Trials(StaticTrials).ScaleErr.RMSErr = str2double(TXT{1}(Ind+9));
+%     Subjects(subj).Trials(StaticTrials).ScaleErr.MaxErr = str2double(TXT{1}(Ind+12));
+%     Subjects(subj).Trials(StaticTrials).ScaleErr.MaxMkr = TXT{1}(Ind+13);
+%     
+%     disp(['Total Square Error = ' TXT{1}(Ind+4)]);
+%     disp(' ');
     
     clearvars ScaleRootName Geopath StaticMarkerFile NewStaticMarkerFile...
         StaticMarkerFileGRF NewStaticMarkerFileGRF i col scale Ind String

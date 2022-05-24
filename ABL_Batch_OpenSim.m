@@ -17,16 +17,20 @@ Settings.TrialWindows = 'No'; % set to 'No' to run IK for entire duration of eac
 Settings.NumStrides = [1]; % number of strides to check for quality data if results don't pass quality control
 Settings.LowPassKinematicsFilter = 6; % define all kinematics filtering to a specified value in Hz
 
-Settings.Scale = 'No';      % model scaling
-Settings.IK = 'No';            % inverse kinematics
-Settings.ID = 'Yes';          % inverse dynamics
-Settings.RRA = 'No';        % residual reduction analysis
-Settings.CMC = 'No';        % computed muscle control
-Settings.SO = 'No';           % static optimzation
-Settings.MA = 'No';           % muscle analysis
+Settings.Scale = 'No';          % model scaling
+Settings.IK = 'Yes';                % inverse kinematics
+Settings.ID = 'No';              % inverse dynamics
+Settings.RankGC = 'Yes';    % rank gait cycles to identify best times for simulations
+Settings.RRA = 'No';            % residual reduction analysis
+Settings.CMC = 'No';            % computed muscle control
+Settings.SO = 'No';              % static optimzation
+Settings.MA = 'No';              % muscle analysis
 
 % plot settings
-Settings.PlotIKErrors = 'Yes';
+Settings.PlotIKErrors = 'No';
+
+fclose('all'); 
+delete('opensim.log');
 
 % Pull in the modeling classes straight from the OpenSim distribution
 import org.opensim.modeling.*
@@ -45,7 +49,8 @@ addpath(genpath('C:\Users\richa\Documents\Packages\MoCapTools'));
 
 D = dir; % get current path
 CurrFolder = D(1).folder; % assign current folder
-GenericFilePath = strcat(CurrFolder, '\OpenSimProcessingFiles'); % set generic folder path
+% GenericFilePath = strcat(CurrFolder, '\OpenSimProcessingFiles'); % set generic folder path
+GenericFilePath = strcat(CurrFolder, '\OpenSimProcessingFiles_GT'); % set generic folder path
 if exist(GenericFilePath, 'dir') == 0
     GenericFilePath = uigetdir(D, 'Select Location of Generic OpenSim files to use for processing');
 end
@@ -60,7 +65,9 @@ if strcmp(Settings.SetupBatch, 'Yes')
     addpath(genpath(subjectPath));
 else
     % hard code subject directory
-    subjectPath = 'D:\UNC_ABL\FpMetabolics_2020\SubjData';
+%     subjectPath = 'D:\UNC_ABL\FpMetabolics_2020\SubjData';
+%     subjectPath = 'D:\UNC_ABL\GT Modeling\BatchProcessing';
+    subjectPath = 'C:\Users\richa\Documents\Bioengineering\Projects\GT_Modeling\BatchProcessing';
     
     % manually select subject directory (comment above)
     if ~exist(subjectPath, 'dir')
@@ -71,14 +78,12 @@ else
 end
 
 
-%% Save Demographics
+%% Identify trial types for each subject
 for subj = 1:length(Subjects)
     
     % identify trial types
     StaticTrials = logical(strcmp({Subjects(subj).Trials.type}, 'static'));
-    
-    % get static trial with hip joint center
-    if contains(Subjects(subj).Trials(StaticTrials).name, 'nohjc')
+    if contains(Subjects(subj).Trials(StaticTrials).name, 'nohjc') % get static trial with hip joint center
         D = dir(Subjects(subj).Trials(1).folder);
         A = contains({D.name}, {'static', 'Static'});
         B = contains({D.name}, 'trc');
@@ -100,24 +105,27 @@ clearvars New Old scaleRootName SetupScale col
 if strcmp(Settings.Scale, 'Yes')
     [Subjects] = ABL_Scale(Settings, Subjects);
     
-    % run analysis on scaling errors
-    [scaleError] = ComputeScaleError(Subjects);
-    ScaleErrTbl = struct2table(scaleError); % save results in table format
-    avg = mean(ScaleErrTbl.RMSError);
-    SD = std(ScaleErrTbl.RMSError);
-    disp(strcat('Average RMS Scale Error = ', num2str(avg)));
-    disp(strcat('Standard Dev RMS Scale Error = ', num2str(SD)));
-    [m,i] = max(ScaleErrTbl.MaxError);
-    disp(strcat('Max scale error = ', num2str(m)));
-    disp(strcat('Max scale error Marker = ', ScaleErrTbl.MaxMkr(i)));
-    disp('All errors in m');
+%     % run analysis on scaling errors
+%     [scaleError] = ComputeScaleError(Subjects);
+%     ScaleErrTbl = struct2table(scaleError); % save results in table format
+%     avg = mean(ScaleErrTbl.RMSError);
+%     SD = std(ScaleErrTbl.RMSError);
+%     disp(strcat('Average RMS Scale Error = ', num2str(avg)));
+%     disp(strcat('Standard Dev RMS Scale Error = ', num2str(SD)));
+%     [m,i] = max(ScaleErrTbl.MaxError);
+%     disp(strcat('Max scale error = ', num2str(m)));
+%     disp(strcat('Max scale error Marker = ', ScaleErrTbl.MaxMkr(i)));
+%     disp('All errors in m');
 end
+
+cd(CurrFolder); 
+clc; 
+disp('All subjects scaled'); 
 
 %% Main Processing Loop
 for subj = 1:length(Subjects) % Subject Loop
     
     disp(['Processing Subject ' Subjects(subj).name]);
-    
     DynamicTrials = ~logical(strcmp({Subjects(subj).Trials.type}, 'static'));
     
     for trial = find(DynamicTrials) % Trial Loop
@@ -140,6 +148,8 @@ for subj = 1:length(Subjects) % Subject Loop
         CMCFolder = strcat(Subjects(subj).Folders.OpenSimFolder , '\CMC_Files');
         mkdir(CMCFolder);  % create CMC folder
         
+        mkdir([Subjects(subj).Folders.OpenSimFolder '\Figures']); % create figures folder
+        
         %% Initalize Settings for Trial loop
         import org.opensim.modeling.*
         import java.io.*
@@ -158,8 +168,6 @@ for subj = 1:length(Subjects) % Subject Loop
         
         if strcmp(Settings.IK, 'Yes')
             tic; 
-            
-
             
             % copy generic setup XML file
             Orig.IK_Setup = strcat(GenericFilePath, '\', GenericDir(contains({GenericDir.name}, 'Setup_IK.xml')).name);
@@ -187,7 +195,6 @@ for subj = 1:length(Subjects) % Subject Loop
             ikTool.setEndTime(Subjects(subj).Trials(trial).Times.End_IK);
             IKfile.Output = fullfile(IKFolder, [TrialName '_IK.mot']);
             ikTool.setOutputMotionFileName(IKfile.Output);
-            
             % marker weighting already set in generic file
             
             % Save the Setup XML settings in a setup file
@@ -305,10 +312,12 @@ for subj = 1:length(Subjects) % Subject Loop
         
         %% Rank Gait Cycles
         % to identify representative gait cycles ripe for muscle-level simulations
-        
+        if strcmp(Settings.RankGC, 'Yes')
+            disp('Ranking Gait Cycles');
+            [Subjects(subj).Trials(trial).GC] = RankGC(Subjects(subj).Trials(trial));
+        end
         
         %% Copy Over Files for RRA and CMC
-        
         if strcmp(Settings.RRA, 'Yes')
             
             % copy over RRA setup file from OpenSimProcessingFiles folder
@@ -951,4 +960,5 @@ for subj = 1:length(Subjects) % Subject Loop
 end % End Subject loop
 
 %% save matlab metadata to file?
+save([subjectPath '\Subjects_GC.mat'], 'Subjects'); 
 

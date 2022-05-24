@@ -14,20 +14,25 @@ CurrPath = dir; % get current folder and add to path
 addpath(genpath(CurrPath(1).folder));
 addpath(genpath('C:\Users\richa\Documents\Packages\OpenSim\Scripts\BatchOpenSim'));
 addpath(genpath('C:\Users\richa\Documents\Packages\MoCapTools'));
-path = 'D:\UNC_ABL\FpMetabolics_2020\SubjData';
+% path = 'D:\UNC_ABL\FpMetabolics_2020\SubjData';
+path = 'D:\UNC_ABL\AgeFatigue';
+% path = 'C:\Users\richa\Documents\Bioengineering\Projects\GT_Modeling\BatchProcessing';
 
 %% Modular Settings
-Settings.ConvertForces = 'Yes'; % Convert .anb forces to .mot files?
+Settings.ConvertForces = 'No'; % Convert .anb forces to .mot files?
 Settings.PlotVoltage = 'No'; % GRF/Forces plotting settings
 Settings.PlotGRFs = 'No';
 Settings.PlotMoments = 'No';
 
 % convert TRC marker trajectories
-Settings.CalculateHJC = 'Yes'; % calculate hip joint center from functional trials before converting trajectories
-Settings.ConvertTrajectories = 'Yes'; % convert marker trajectory files (.TRCs)
+Settings.ConvertTrajectories = 'No'; % convert marker trajectory files (.TRCs)
 
-Settings.HipJointCenter = 'Yes'; % use static files with hip joint centers
+Settings.CalculateHJC = 'No'; % calculate hip joint center from functional trials
+Settings.HipJointCenter = 'No'; % use static files with hip joint centers
 Settings.PrintResults = 'No'; % print results in command window
+
+Settings.MassFromStatic = 'No'; %'InfoSheet';
+Settings.IdentifyCrossover = 'No'; % identify crossover steps when walking on treadmill
 
 %% Set location of directories
 % Set subject location
@@ -37,11 +42,13 @@ else
     StudyFolder = uigetdir(CurrPath(1).folder, 'Select Folder Containing Subject Data');
 end
 SubjPath = dir(StudyFolder);
+SubjPath(1:2) = []; 
 addpath(genpath(StudyFolder));
 
 % identify subject and trials within folder
-NumSubjFolders = sum([SubjPath.isdir]==1)-2; % identify number of subjects
+NumSubjFolders = sum([SubjPath.isdir]==1); % identify number of subjects
 SubjFolders = [SubjPath.isdir];
+
 
 % Loop Through Subjects% initialize subject structure
 Subjects(NumSubjFolders).name = [];
@@ -59,10 +66,7 @@ if ~ exist(FPcal_file, 'file') % if default file doesnt exist, select a new file
 end
 
 %% Loop through each subject
-for SubjLoop = 19%length(SubjFolders) % first two items are garbage
-    if SubjFolders(SubjLoop) == 0
-        continue % skip iteration bc it isnt a subject folder
-    end
+for SubjLoop = find(SubjFolders==1) % first two items are garbage
     
     tic; % start processing timer for each subject
     
@@ -107,6 +111,9 @@ for SubjLoop = 19%length(SubjFolders) % first two items are garbage
                 contains(Trials(TC).name,'static')
             StaticFile = Trials(TC).name;
             Trials(TC).type = 'static';
+        elseif contains(Trials(TC).name,'hjc') || ...
+                contains(Trials(TC).name,'HJC')
+            Trials(TC).type = 'hjc';
         else
             Trials(TC).type = 'walking';
         end
@@ -116,6 +123,22 @@ for SubjLoop = 19%length(SubjFolders) % first two items are garbage
         Trials(TC).files.OpenSimGRF = strcat( TrialName, '_OpenSimGRF.mot');
         Trials(TC).files.TRC = strcat( TrialName, '.trc');
         Trials(TC).files.ANC = strcat( TrialName, '.anc');
+        % if not copying over to opensim files, rename as original files
+        if exist(Trials(TC).files.OpenSimTRC, 'file') == 0
+            if strcmp(Settings.ConvertTrajectories, 'No')
+                Trials(TC).files.OpenSimTRC = Trials(TC).files.TRC;
+            end
+        end
+        if exist(Trials(TC).files.OpenSimGRF, 'file') == 0
+            if strcmp(Settings.ConvertForces, 'No')
+                if exist(Trials(TC).files.ANC, 'file')
+                    Trials(TC).files.OpenSimGRF = Trials(TC).files.ANC;
+                else
+                    Trials(TC).files.OpenSimGRF = [Trials(TC).files.TRC(1:end-4) '.mot'];
+                end
+            end
+        end
+        
         
         TC = TC + 1; % on to next trial (next TRC file)
     end
@@ -124,31 +147,39 @@ for SubjLoop = 19%length(SubjFolders) % first two items are garbage
     Trials(ToDel) = [];
     
     WalkingTrials = contains({Trials.type}, 'walking');
-    StaticTrial = ~WalkingTrials;
+    StaticTrial = contains({Trials.type}, 'static');
+    
+    if sum(StaticTrial) > 1 % if too many static trials - user selects one
+        ps = 'Multiple Static Trials Detected, Select the one to use to scale the opensim model (no exo)'; 
+        StaticTrials = {Trials(StaticTrial).name};
+        s = listdlg('ListString', StaticTrials, 'PromptString', ps);  
+        staticname = StaticTrials{s};
+        StaticTrial = contains({Trials.name}, staticname);
+    end
     clearvars TrialCounter
     
     %% Calculate Hip Joint Centers if desired
     if strcmp(Settings.CalculateHJC, 'Yes')
-        disp('Adding HJCs');
-        for i = 1:length(Trials)
-            filesAddHJC{i} = [Trials(i).name '.trc'];
-        end
-        Osim.findHJC(strcat(StaticFile, '.trc'), [Trials(StaticTrial).folder '\'], filesAddHJC)
+%         for i = 1:length(Trials)
+%             filesAddHJC{i} = [Trials(i).name '.trc'];
+%         end
+        Osim.findHJC(strcat(StaticFile, '.trc'), Trials(StaticTrial).folder)
     end
     close all;
     
     %% Convert Force Files (MOT)
     if strcmp(Settings.ConvertForces, 'Yes')
+        disp(' '); 
+        disp('Converting Force Files'); 
         
         % Pre-load FPcal_file to speed up process
         [FPcal_data.S, FPcal_data.pos, FPcal_data.origin, FPcal_data.R] = load_fpcal(FPcal_file);
         
         for i = 1:length(Trials)
             cd(Trials(i).folder); % change to folder with trials
-            convertFPdata_OpenSim(Trials(i).files.ANC, FPcal_data, Trials(i).folder, 0, Settings);
+            convertFPdata_OpenSim(Trials(i).files.ANC, FPcal_data, Trials(i).folder, Settings);
         end
         
-        disp(' ');
         disp('All .anc files converted to .mot');
     end
     clearvars AbovePath ToCut FileDir Files2move i j newFile
@@ -157,20 +188,18 @@ for SubjLoop = 19%length(SubjFolders) % first two items are garbage
     
     %% Convert Marker Trajectories
     if strcmp(Settings.ConvertTrajectories, 'Yes')
+        disp(' '); 
+        disp('Converting Marker Files'); 
         
-        %% Make any changes to the TRC File
+        %% Make any changes to TRC File
         for i = 1:length(Trials) % loop through files to convert
-            disp(['...Converting ' Trials(i).name ' TRC data']);
+            
+            disp(['Converting   ' Trials(i).name '   TRC data']);
             
             % Copy the TRC files to a OpenSim folder to prevent overwriting
-            if strcmp(Settings.CalculateHJC, 'Yes')
-                newFname = [Trials(i).name '_hjc.trc'];
-                inFile = ['HJC\', newFname];
-            else
-                inFile = strcat(Trials(i).folder,'\', Trials(i).files.TRC);
-            end
-            
-            addpath(Subjects(SC).Folders.OpenSimFolder);  % add output to path
+            inFile = strcat(Trials(i).folder,'\', Trials(i).files.TRC);
+            cd(Subjects(SC).Folders.path); 
+            addpath(genpath(Subjects(SC).Folders.OpenSimFolder));  % add output to path
             trc = Osim.readTRC(inFile);
             TRC = table2array(trc);
             
@@ -208,38 +237,46 @@ for SubjLoop = 19%length(SubjFolders) % first two items are garbage
     
     
     %% Get subject mass from static trial
-    i = StaticTrial;
-    disp(' ');
-    disp('Getting subject mass from static trial');
-    Trials(i).GRF = LoadGRF(strcat(Trials(i).folder, '\OpenSim\', Trials(i).files.OpenSimGRF), 0); % load grfs
-    Cols = {'ground_force_vy','1_ground_force_vy'}; % define vGRF columns
-    vGRFs = Trials(i).GRF.AllData(:,contains(Trials(i).GRF.ColHeaders,Cols)); % identify columns from full dataset
-    AvgvGRF = mean(sum(vGRFs,2)); % sum and average
-    Subjects(SC).Demo.mass = AvgvGRF ./ 9.81; % calculate mass from newtons
-    clearvars Cols vGRFs AvgvGRF
-    disp(' ');
+    if strcmp(Settings.MassFromStatic, 'Yes')
+        i = StaticTrial;
+        disp(' ');
+        disp('Getting subject mass from static trial');
+        Trials(i).GRF = Osim.readMOT(strcat(Trials(i).folder, '\OpenSim\', Trials(i).files.OpenSimGRF));
+%         Trials(i).GRF = LoadGRF(strcat(Trials(i).folder, '\OpenSim\', Trials(i).files.OpenSimGRF), 0); % load grfs
+        Cols = {'ground_force_vz','x1_ground_force_vz'}; % define vGRF columns
+%         Cols = {'ground_force_vy','1_ground_force_vy'}; % define vGRF columns
+        vGRFs(:,1) = Trials(i).GRF.(Cols{1});
+        vGRFs(:,2) = Trials(i).GRF.(Cols{2});
+        AvgvGRF = mean(sum(vGRFs,2)); % sum and average
+        Subjects(SC).Demo.mass = AvgvGRF ./ 9.81; % calculate mass from newtons
+        clearvars Cols vGRFs AvgvGRF
+        disp(' ');
+    elseif strcmp(Settings.MassFromStatic, 'InfoSheet')
+        fn = [Subjects(SC).name '_Info.csv']; 
+        T = readtable(fn);
+        r = contains(T{:,1}, 'Mass');
+        Subjects(SC).Demo.mass = str2double(char(T{r, 2}));
+    end
     
     %% Identify Crossover steps
     % Crossover analysis
-    Settings.IdentifyCrossover = 'Yes'; % identify crossover steps when walking on treadmill
-    Settings.ExcludeCrossover = 'Yes'; % exclude crossover steps from analysis
-    Settings.SaveCrossoverPlot = 'Yes'; % plot crossover step analysis figures
     
     if strcmp(Settings.IdentifyCrossover, 'Yes')
         disp(' ');
         disp('Identifying Crossover Steps');
         
-        % crossover analysis
-        CrossoverFig = figure('Position',[100 100 1200 800]);
-        [Trials] = CrossoverAnalysis(Trials, WalkingTrials, Subjects(SC).Demo.mass, Settings, CrossoverFig);
+        % run crossover analysis
+        [Trials] = CrossoverAnalysis(Trials, WalkingTrials, Subjects(SC).Demo.mass);
         close; % close figure
         
     end
     
     %% Finalize iteration for subject loop
     % remove some variables to save storage space
-    Fields2Del = {'GRF'};
-    Trials = rmfield(Trials, Fields2Del);
+%     Fields2Del = {'GRF'};
+%     if isfield(Trials, Fields2Del)
+%         Trials = rmfield(Trials, Fields2Del);
+%     end
     
     % add Trials struct to Subjects struct
     Subjects(SC).Trials = Trials;
