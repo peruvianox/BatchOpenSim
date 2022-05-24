@@ -1,4 +1,4 @@
-function [mass,FPused, files, directoryf, Analog] = convertFPdata_OpenSim(input_file, FPcal_data, directory, zero_file, Settings)
+function [mass, FPused, files, directoryf, Analog] = convertFPdata_OpenSim(input_file, FPcal_data, directory, Settings)
 % done=writeForcesFile(time,forcedata,directory,file)
 % writes a motion analysis style forces file which includes the
 % forces (Fx, Fy, Fz) ceneter of pressure (x, y, z) and moment (x, y, z)
@@ -72,10 +72,10 @@ end
 %% Fy threshold value to eliminate undefined COP Calulations
 fythresh = 10;
 if isstring(files) == 0
-    loop_index=1;
+    loop_index = 1;
 else
-    loop_index=size(files,2);
-    k=0;
+    loop_index = size(files,2);
+    k = 0;
 end
 
 %% Loop through files
@@ -86,12 +86,12 @@ Analog(loop_index).channel_names = [];
 for w = 1:loop_index
     
     % index filenames for loading
-    if loop_index==1
-        input_file=files(1:end);
+    if loop_index == 1
+        input_file = files(1:end);
     else
-        k=k+1;
-        input_file=cell2mat(files(k));
-        input_file=input_file(1:end);
+        k = k+1;
+        input_file = cell2mat(files(k));
+        input_file = input_file(1:end);
     end
     
     %% Load .anc file from input_file name
@@ -103,7 +103,7 @@ for w = 1:loop_index
     %         voltdata=voltdata-ones(size(voltdata,1),1)*mean_zero;
     %     end
     
-    % filtering the data
+    % filter force data
     T = time(2)-time(1); % sample time
     cutoff = 12; % cutoff frequency in Hz for GRFs
     [b, a] = butter(3,cutoff*T*2,'low'); % design filter
@@ -119,7 +119,7 @@ for w = 1:loop_index
     %     f=(1/T)/2*linspace(0,1,NFFT/2+1);
     %     figure(2); hold on; plot(f,2*abs(Y(1:NFFT/2+1)),'g'); axis([0 200 0 0.1]);
     
-    % Plot Voltage
+    %% Plot Voltage
     if strcmp(Settings.PlotVoltage, 'Yes')
         % select time window to plot
         s = 1; % start frame
@@ -175,7 +175,7 @@ for w = 1:loop_index
         title(strcat(disp_name, 'FP # 2 Z'));
     end
     
-    % Find which forceplates are being used
+    %% Find which forceplates are being used
     %     mean_data = mean(data(:,1:size(data,2)));
     FPused=[];
     
@@ -189,14 +189,11 @@ for w = 1:loop_index
     
     
     %% Find active Forceplates and create new voltdata for those forceplates
-    %     FP_Loc=zeros(length(voltdata),2);
-    %     VDataNew=zeros(length(voltdata),2);
-    %     ChannelsNew=zeros(length(voltdata),2);
     FP_Loc = [];
     VDataNew = [];
     ChannelsNew=[];
     
-    for i = 1:1:length(FPused) % loop through # of force plates use
+    for i = 1:1:length(FPused) % loop through # of force plates
         FPnumber = FPused(i);
         FPnumber = int2str(FPnumber);
         FPname = ['F' FPnumber 'X'];
@@ -276,7 +273,7 @@ for w = 1:loop_index
         %         end
         
         % z axis Center of pressure Origin (-) to transform to lab reference frame
-        Zcur = (zeros(size(Xcur))-origin(3,a)+pos(3,a))*1000;
+        Zcur = (zeros(size(Xcur)) - origin(3,a)+pos(3,a)) * 1000;
         % Zcur=zeros(size(Xcur)); %z axis Center of Pressure
         
         % Calculation of the Torque Mz
@@ -302,38 +299,39 @@ for w = 1:loop_index
     % Rotate Outputs while applying thresholding
     
     % right ground forces - plate 1
-    forces(fc_temp1,1)=Output(fc_temp1,1);
-    forces(fc_temp1,2)=Output(fc_temp1,3);
-    forces(fc_temp1,3)=-Output(fc_temp1,2);
+    forces(fc_temp1,1) = Output(fc_temp1,1);
+    forces(fc_temp1,2) = Output(fc_temp1,3);
+    forces(fc_temp1,3) = -Output(fc_temp1,2);
     % right CoPs - plate 1
-    forces(fc_temp1,4)=Output(fc_temp1,4)/1000; % divide by 1000 to convert from m to mm
-    forces(fc_temp1,5)=Output(fc_temp1,6)/1000;
-    forces(fc_temp1,6)=-Output(fc_temp1,5)/1000;
+    forces(fc_temp1,4) = Output(fc_temp1,4)/1000; % divide by 1000 to convert from m to mm
+    forces(fc_temp1,5) = Output(fc_temp1,6)/1000;
+    forces(fc_temp1,6) = -Output(fc_temp1,5)/1000;
     % left ground forces - plate 2
-    forces(fc_temp2,7)=Output(fc_temp2,10);
-    forces(fc_temp2,8)=Output(fc_temp2,12);
-    forces(fc_temp2,9)=-Output(fc_temp2,11);
+    forces(fc_temp2,7) = Output(fc_temp2,10);
+    forces(fc_temp2,8) = Output(fc_temp2,12);
+    forces(fc_temp2,9) = -Output(fc_temp2,11);
     % left CoPs
-    forces(fc_temp2,10)=Output(fc_temp2,13)/1000; % divide by 1000 to convert from m to mm
-    forces(fc_temp2,11)=Output(fc_temp2,15)/1000;
-    forces(fc_temp2,12)=-Output(fc_temp2,14)/1000;
+    forces(fc_temp2,10) = Output(fc_temp2,13)/1000; % divide by 1000 to convert from m to mm
+    forces(fc_temp2,11) = Output(fc_temp2,15)/1000;
+    forces(fc_temp2,12) = -Output(fc_temp2,14)/1000;
     % ground torques
     % right plate (#1)
-    forces(fc_temp1,13)=Output(fc_temp1,7);
-    forces(fc_temp1,14)=Output(fc_temp1,9);
-    forces(fc_temp1,15)=-Output(fc_temp1,8);
+    forces(fc_temp1,13) = Output(fc_temp1,7);
+    forces(fc_temp1,14) = Output(fc_temp1,9);
+    forces(fc_temp1,15) = -Output(fc_temp1,8);
     % left plate (#2)
-    forces(fc_temp2,16)=Output(fc_temp2,16);
-    forces(fc_temp2,17)=Output(fc_temp2,18);
-    forces(fc_temp2,18)=-Output(fc_temp2,17);
+    forces(fc_temp2,16) = Output(fc_temp2,16);
+    forces(fc_temp2,17) = Output(fc_temp2,18);
+    forces(fc_temp2,18) = -Output(fc_temp2,17);
     
     %% Fine Tune Thresholding
     % if static trial, use all points that are on the FPs
-    if contains(input_file, 'Static') ||  contains(input_file, 'static')
+    strings = {'Static','static', 'Static_Marker_Reference','HJC','hjc'};
+    if contains(input_file, strings) 
         
-        % do nothing, GRFs dont need any additional thresholding
+        % do nothing, GRFs dont need any additional thresholding for static trials
         
-    else % walking trials
+    else % fine tune thresholding for walking trials
         
         Forces = zeros(size(Output));
         NewThresh = 10; % threshold in N for steps
@@ -423,7 +421,7 @@ for w = 1:loop_index
         end
         New_fc_temp1 = logical(New_fc_temp1);
         
-        clearvars vGRF Threshed ThreshLog Changes NewChanges Count StartEvent
+%         clearvars vGRF Threshed ThreshLog Changes NewChanges Count StartEvent
         
         % Second force plate
         vGRF = Output(:,12); % pull vertical ground reaction force
@@ -569,8 +567,6 @@ for w = 1:loop_index
         Forces.data = importdata(Forces.name);
         Forces.data.colheaders =  {'Sample','FX1','FY1','FZ1','X1','Y1','Z1','MZ1',...
             'FX2','FY2','FZ2','X2','Y2','Z2','MZ2'};
-        %           Forces.data.colheaders =  {'FX1','FY1','FZ1','X1','Y1','Z1','MX1','MY1','MZ1',...
-        % 'FX2','FY2','FZ2','X2','Y2','Z2','MX2','MY2','MZ2'};
         MainTrialName = strsplit(Forces.name, '_');
         
         % pull columns with data
@@ -645,9 +641,7 @@ for w = 1:loop_index
         
         ForceName = strrep(Forces.name,'_', ' ');
         GRFName = strrep(GRF.FileName,'_', ' ');
-        %         input_file = strrep(input_file, '.anc', '');
-        supertitle(strcat(MainTrialName{1}, ' -  .forces and GRF.mot file comparison'));
-        
+        supertitle(strcat(MainTrialName{1}, ' -  .forces and GRF.mot file comparison')); 
         % saveas(ForceComp, strcat(MainTrialName{1}, '_ForceComp.png'));
     end
     
@@ -658,8 +652,6 @@ for w = 1:loop_index
         Moments.data = importdata(Moments.name);
         Moments.data.colheaders =  {'Sample','FX1','FY1','FZ1','X1','Y1','Z1','MZ1',...
             'FX2','FY2','FZ2','X2','Y2','Z2','MZ2'};
-        %           Moments.data.colheaders =  {'FX1','FY1','FZ1','X1','Y1','Z1','MX1','MY1','MZ1',...
-        % 'FX2','FY2','FZ2','X2','Y2','Z2','MX2','MY2','MZ2'};
         MainTrialName = strsplit(Moments.name, '_');
         
         % pull columns with data
@@ -703,53 +695,31 @@ for w = 1:loop_index
     
     %% rename files and export data
     output_file =  strrep(input_file, '.anc',  '_OpenSimGRF.mot'); % define output file name
-    Analog.Output = Output; % save output
-    
-    % length of output
-    [npts,~]=size(Output);
-    
-    if isempty(directoryf)==1
-        fid = fopen(['\OpenSim\', output_file],'w');
-    else
-        fid = fopen([directoryf, '\OpenSim\', output_file],'w');
-    end
-    
-    % Write the header
-    fprintf(fid, output_file); fprintf(fid,'\n');
-    fprintf(fid,'version=1'); fprintf(fid,'\n');
-    fprintf(fid,['nRows=', num2str((npts))]); fprintf(fid,'\n');
-    fprintf(fid,'nColumns=19'); fprintf(fid,'\n');
-    fprintf(fid,'inDegrees=yes'); fprintf(fid,'\n');
-    fprintf(fid,'endheader'); fprintf(fid,'\n');
     
     % define column headers
-    ChanOutds={'time','ground_force_vx','ground_force_vy','ground_force_vz',...
+    ChanOutds = {'time','ground_force_vx','ground_force_vy','ground_force_vz',...
         'ground_force_px','ground_force_py','ground_force_pz',...
         '1_ground_force_vx','1_ground_force_vy','1_ground_force_vz',...
         '1_ground_force_px','1_ground_force_py','1_ground_force_pz',...
         'ground_torque_x','ground_torque_y','ground_torque_z',...
         '1_ground_torque_x','1_ground_torque_y','1_ground_torque_z'};
     
-    % Write the data
-    for i=1:npts
-        if i==1
-            fprintf(fid,'%s\t', ChanOutds{1,:}); fprintf(fid,'\n');
-        else
-            fprintf(fid,num2str(time(i-1)));
-            fprintf(fid,'\t%3.4f',forces(i-1,:)); fprintf(fid,'\n');
-        end
+    % ensure same dimensions of output array
+    [~, Ncols] = size(Output); 
+    if Ncols < length(ChanOutds)
+        Output(:,2:end+1) = Output(:,1:end);
+        Output(:, 1) = time; 
     end
+    Analog.Output = Output; % save output
+    O = array2table(Output);
+    O.Properties.VariableNames = ChanOutds;
     
-    mass=mean(forces(:,3)+forces(:,10))/9.81;
-    fclose(fid);
-    disp(['Wrote ',num2str(npts),' frames of force data to ', output_file]);
+    disp(['Writing   ' output_file]); 
+    Osim.writeMOT(O, 'FilePath', ['OpenSim/' output_file]);
     
-    mass = 1;
     
 end
 
-% disp(' ');
-% disp('All FP data converted to .mot files.');
 
 end
 
