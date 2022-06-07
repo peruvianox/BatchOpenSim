@@ -144,6 +144,7 @@ if strcmp(PlotActivations, 'Yes')
     subplotsqueeze(H, 1.15);
     saveas(H, 'MuscleActivations.png');
     
+    
 end
 
 %% Combine left and right trials for the same subject into structure

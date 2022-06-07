@@ -225,7 +225,7 @@
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->
 					<weight>1</weight>
 				</IKMarkerTask>
-				<IKMarkerTask name="Clav">
+				<IKMarkerTask name="Notch">
 					<!--Whether or not this task will be used during inverse kinematics solve.-->
 					<apply>true</apply>
 					<!--Weight given to a marker or coordinate for solving inverse kinematics problems.-->

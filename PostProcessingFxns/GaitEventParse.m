@@ -66,7 +66,7 @@ for i = 1:length(strikes) - 1
     L_Times(i).OppFootOn_p = (opp_strikes(i) - strikes(i)) / L_Times(i).StrideTime;
     
     % foot off
-       L_Times(i).FootOff = offs(i) - strikes(i);
+    L_Times(i).FootOff = offs(i) - strikes(i);
     L_Times(i).FootOff_p = (offs(i) - strikes(i)) / L_Times(i).StrideTime;
     
 end
@@ -137,10 +137,38 @@ for i = 1:length(strikes) - 1
     R_Times(i).OppFootOn_p = (opp_strikes(i) - strikes(i)) / R_Times(i).StrideTime;
     
     % foot off
-       R_Times(i).FootOff = offs(i) - strikes(i);
+    R_Times(i).FootOff = offs(i) - strikes(i);
     R_Times(i).FootOff_p = (offs(i) - strikes(i)) / R_Times(i).StrideTime;
     
 end
+
+%% Quality control 
+
+Ind.ST1 = [R_Times.StrideTime] > 1.5;
+Ind.ST2 = [R_Times.StrideTime] < 0;
+Ind.OppOff1 = [R_Times.OppFootOff] > 10;
+Ind.OppOff2 = [R_Times.OppFootOff] < 0;
+Ind.OppOn1 = [R_Times.OppFootOn] > 10;
+Ind.OppOn2 = [R_Times.OppFootOn] < 0;
+Ind.FootOff1 = [R_Times.FootOff] > 1;
+Ind.FootOff2 = [R_Times.FootOff] < 0;
+Ind.ToDel = sum([Ind.ST1; Ind.ST2; Ind.OppOff1; Ind.OppOff2; ...
+    Ind.OppOn1; Ind.OppOn2; Ind.FootOff1; Ind.FootOff2]) > 0; 
+R_Times(Ind.ToDel) = [];
+
+
+Ind.ST1 = [L_Times.StrideTime] > 1.5;
+Ind.ST2 = [L_Times.StrideTime] < 0;
+Ind.OppOff1 = [L_Times.OppFootOff] > 10;
+Ind.OppOff2 = [L_Times.OppFootOff] < 0;
+Ind.OppOn1 = [L_Times.OppFootOn] > 10;
+Ind.OppOn2 = [L_Times.OppFootOn] < 0;
+Ind.FootOff1 = [L_Times.FootOff] > 1;
+Ind.FootOff2 = [L_Times.FootOff] < 0;
+Ind.ToDel = sum([Ind.ST1; Ind.ST2; Ind.OppOff1; Ind.OppOff2; ...
+    Ind.OppOn1; Ind.OppOn2; Ind.FootOff1; Ind.FootOff2]) > 0; 
+L_Times(Ind.ToDel) = [];
+
 
 %%
 

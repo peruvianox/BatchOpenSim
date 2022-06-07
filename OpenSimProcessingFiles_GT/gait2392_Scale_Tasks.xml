@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<IKTaskSet name="gait2392_Scale">
+<!--apply = Whether or not this task will be used during inverse kinematics solve.-->
+<!--weight = Weight given to a marker or coordinate for solving inverse kinematics problems.-->
+	<objects>
+		<IKMarkerTask name="RASI">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LASI">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RPSI">		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LPSI">		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RTH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RTH2">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RTH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RKNEL">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RKNEM">		<apply>false</apply>		<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RSH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RSH2">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RSH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RSH4">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="RANKL"> 		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RANKM">		<apply>false</apply>		<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RHEE">		<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RMT5">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="RMT1">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LTH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LTH2">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LTH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LKNEL">		<apply>true</apply>			<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LKNEM">		<apply>false</apply>		<weight>2</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LSH1">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LSH2">			<apply>true</apply>			<weight>0.75</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LSH3">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LSH4">			<apply>true</apply>			<weight>0.5</weight>		</IKMarkerTask>
+		<IKMarkerTask name="LANKL">		<apply>true</apply>			<weight>1</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LANKM">		<apply>false</apply>		<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LHEE">		<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LMT5">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+		<IKMarkerTask name="LMT1">			<apply>true</apply>			<weight>3</weight>			</IKMarkerTask>
+    </objects>
+</IKTaskSet>

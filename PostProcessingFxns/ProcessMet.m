@@ -1,16 +1,17 @@
 % Process CMC Metabolics Results after batch processing
 % create figures and run stats
 
-
 clear;
 clc;
 % dbstop if error
-cd('C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts');
+% cd('C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts');
+cd('C:\Users\richa\Documents\Packages\OpenSim\Scripts');
 addpath(genpath('BatchOpenSim'));
 addpath(genpath('CodeLibrary'));
 
 % load subjext files
-subjectPath = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\exp';
+% subjectPath = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\exp';
+subjectPath = 'D:\UNC_ABL\FpMetabolics_2019';
 if ~exist(subjectPath, 'dir')
     subjectPath = uigetdir(CurrFolder, 'Select Folder Containing Subject Data');
 end
@@ -18,13 +19,16 @@ addpath(genpath(subjectPath));
 load('Subjects.mat');
 
 % define metabolics folder
-MetabolicsFolder = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts\CMC_Results\MetabolicReports';
+% MetabolicsFolder = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts\CMC_Results\MetabolicReports';
+MetabolicsFolder = 'C:\Users\richa\Documents\Packages\OpenSim\Scripts\CMC_Results\MetabolicReports';
 addpath(genpath(MetabolicsFolder));
 MetabolicsDir = dir(MetabolicsFolder);
 
 % add walking speed to demographics
 if isfield(Subjects, 'PrefWalkSpeed') == 0
-    Demo.File = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Metabolics_Feedback_Demographics';
+%     Demo.File = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Metabolics_Feedback_Demographics';
+    Demo.File = 'C:\Users\richa\Documents\Packages\OpenSim\Metabolics_Feedback_Demographics';
+    
     [~,~,Demo.Raw] = xlsread(Demo.File);
     Demo.WalkSpeedCol = strcmp(Demo.Raw(1,:), 'Pref Speed (m/s)');
     
@@ -720,27 +724,19 @@ end
             
             % leading limb dub support
             StrideFreq(trial).DS1Avg(subj) = Subjects(subj).Trials(trial).TSData.OppOff_Avg;
-%             StrideFreq(trial).DS1Std(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std;
             StrideFreq(trial).DS1Avg_T(subj) = StrideFreq(trial).DS1Avg(subj) * sf;
-%             StrideFreq(trial).DS1Std_T(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std / 100 * sf;
             
             % single support
             StrideFreq(trial).SingSupAvg(subj) = Subjects(subj).Trials(trial).TSData.OppOn_Avg - Subjects(subj).Trials(trial).TSData.OppOff_Avg;
-%             StrideFreq(trial).SingSupStd(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std;
             StrideFreq(trial).SingSupAvg_T(subj) = StrideFreq(trial).SingSupAvg(subj) * sf;
-%             StrideFreq(trial).SingSupStd_T(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std / 100 * sf;
      
             % trailing limb dub support
             StrideFreq(trial).DS2Avg(subj) = Subjects(subj).Trials(trial).TSData.Off_Avg - Subjects(subj).Trials(trial).TSData.OppOn_Avg;
-%             StrideFreq(trial).DS2Std(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std;
             StrideFreq(trial).DS2Avg_T(subj) = StrideFreq(trial).DS2Avg(subj) * sf;
-%             StrideFreq(trial).DS2Std_T(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std / 100 * sf;
             
             % swing
             StrideFreq(trial).SwingAvg(subj) = 1 - Subjects(subj).Trials(trial).TSData.Off_Avg;
-%             StrideFreq(trial).SwingStd(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std;
             StrideFreq(trial).SwingAvg_T(subj) = StrideFreq(trial).SwingAvg(subj) * sf;
-%             StrideFreq(trial).SwingStd_T(subj) = Subjects(subj).Trials(trial).TSData.OppOff_std / 100 * sf;
             
         end
     end
@@ -824,7 +820,8 @@ end
 %% Correlate modelled and measured metabolic cost
 clearvars R n o p
 % load measured met cost
-[~, ~, Raw] = xlsread('C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Subject_NetMetabolics.xlsx');
+% [~, ~, Raw] = xlsread('C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Subject_NetMetabolics.xlsx');
+[~, ~, Raw] = xlsread('C:\Users\richa\Documents\Packages\OpenSim\Subject_NetMetabolics.xlsx');
 c = 0;
 % TotalColors = [rgb('LightGray'); rgb('DarkGray'); rgb('Gray');  rgb('DarkSlateGray'); rgb('Black')];
 TotalColors = [rgb('Blue'); rgb('CornflowerBlue'); rgb('Black');  rgb('Coral'); rgb('OrangeRed')];
@@ -990,53 +987,56 @@ text(1, 11, '\bf F', 'HorizontalAlignment','center')
 clc; clearvars Table table Meas MeasTable
 Conditions = {'Hip1','Hip2','Hip3','Hip4','Hip5', 'Ankle1','Ankle2','Ankle3','Ankle4','Ankle5'};
 k = 1;
+
 for j = 1:length(Subjects)
     
     % stride time - in seconds
-    ST(k).y1 = StrideFreq(1).StrideTimeAvg(j) ;
-    ST(k).y2 = StrideFreq(2).StrideTimeAvg(j) ;
-    ST(k).y3 = StrideFreq(3).StrideTimeAvg(j) ;
-    ST(k).y4 = StrideFreq(4).StrideTimeAvg(j) ;
-    ST(k).y5 = StrideFreq(5).StrideTimeAvg(j) ;
+    ST(k).y1 = StrideFreq(2).StrideTimeAvg(j) ;
+    ST(k).y2 = StrideFreq(1).StrideTimeAvg(j) ;
+    ST(k).y3 = StrideFreq(5).StrideTimeAvg(j) ;
+    ST(k).y4 = StrideFreq(3).StrideTimeAvg(j) ;
+    ST(k).y5 = StrideFreq(4).StrideTimeAvg(j) ;
     
     % Leading Limb Dub Sup - in % GC
-    DS1(k).y1 = StrideFreq(1).DS1Avg_T(j);
-    DS1(k).y2 = StrideFreq(2).DS1Avg_T(j);
-    DS1(k).y3 = StrideFreq(3).DS1Avg_T(j);
-    DS1(k).y4 = StrideFreq(4).DS1Avg_T(j);
-    DS1(k).y5 = StrideFreq(5).DS1Avg_T(j);
+    DS1(k).y1 = StrideFreq(2).DS1Avg(j);
+    DS1(k).y2 = StrideFreq(1).DS1Avg(j);
+    DS1(k).y3 = StrideFreq(5).DS1Avg(j);
+    DS1(k).y4 = StrideFreq(3).DS1Avg(j);
+    DS1(k).y5 = StrideFreq(4).DS1Avg(j);
     
     %Single sup  - in % GC
-    SingSup(k).y1 = StrideFreq(1).SingSupAvg_T(j);
-    SingSup(k).y2 = StrideFreq(2).SingSupAvg_T(j);
-    SingSup(k).y3 = StrideFreq(3).SingSupAvg_T(j);
-    SingSup(k).y4 = StrideFreq(4).SingSupAvg_T(j);
-    SingSup(k).y5 = StrideFreq(5).SingSupAvg_T(j);
+    SingSup(k).y1 = StrideFreq(2).SingSupAvg(j);
+    SingSup(k).y2 = StrideFreq(1).SingSupAvg(j);
+    SingSup(k).y3 = StrideFreq(5).SingSupAvg(j);
+    SingSup(k).y4 = StrideFreq(3).SingSupAvg(j);
+    SingSup(k).y5 = StrideFreq(4).SingSupAvg(j);
     
     % trailing limb dub sup - in % GC
-    DS2(k).y1 = StrideFreq(1).DS2Avg_T(j);
-    DS2(k).y2 = StrideFreq(2).DS2Avg_T(j);
-    DS2(k).y3 = StrideFreq(3).DS2Avg_T(j);
-    DS2(k).y4 = StrideFreq(4).DS2Avg_T(j);
-    DS2(k).y5 = StrideFreq(5).DS2Avg_T(j);
+    DS2(k).y1 = StrideFreq(2).DS2Avg(j);
+    DS2(k).y2 = StrideFreq(1).DS2Avg(j);
+    DS2(k).y3 = StrideFreq(5).DS2Avg(j);
+    DS2(k).y4 = StrideFreq(3).DS2Avg(j);
+    DS2(k).y5 = StrideFreq(4).DS2Avg(j);
     
     % swing - in % GC
-    Swing(k).y1 = StrideFreq(1).SwingAvg_T(j);
-    Swing(k).y2 = StrideFreq(2).SwingAvg_T(j);
-    Swing(k).y3 = StrideFreq(3).SwingAvg_T(j);
-    Swing(k).y4 = StrideFreq(4).SwingAvg_T(j);
-    Swing(k).y5 = StrideFreq(5).SwingAvg_T(j);
+    Swing(k).y1 = StrideFreq(2).SwingAvg(j);
+    Swing(k).y2 = StrideFreq(1).SwingAvg(j);
+    Swing(k).y3 = StrideFreq(5).SwingAvg(j);
+    Swing(k).y4 = StrideFreq(3).SwingAvg(j);
+    Swing(k).y5 = StrideFreq(4).SwingAvg(j);
     
     % ---------------------------------------------------------------------
     % overall metabolic cost
-    MetabolicCost(k).y1 = Subjects(j).Trials(1).AvgMetCost; 
-    MetabolicCost(k).y2 = Subjects(j).Trials(2).AvgMetCost; 
-    MetabolicCost(k).y3 = Subjects(j).Trials(3).AvgMetCost; 
-    MetabolicCost(k).y4 = Subjects(j).Trials(4).AvgMetCost; 
-    MetabolicCost(k).y5 = Subjects(j).Trials(5).AvgMetCost; 
+    MetabolicCost(k).y1 = Subjects(j).Trials(2).AvgMetCost; 
+    MetabolicCost(k).y2 = Subjects(j).Trials(1).AvgMetCost; 
+    MetabolicCost(k).y3 = Subjects(j).Trials(5).AvgMetCost; 
+    MetabolicCost(k).y4 = Subjects(j).Trials(3).AvgMetCost; 
+    MetabolicCost(k).y5 = Subjects(j).Trials(4).AvgMetCost; 
     
     % ---------------------------------------------------------------------
     % Total
+    DS1TotalTable(k).Subject = Subjects(j).name;
+    DS1TotalTable(k).Joint = 'Total';
     DS1TotalTable(k).y1 = Total(1).UMB_Work.DS1_Tot(1,1,j);
     DS1TotalTable(k).y2 = Total(2).UMB_Work.DS1_Tot(1,1,j);
     DS1TotalTable(k).y3 = Total(3).UMB_Work.DS1_Tot(1,1,j);
@@ -1084,6 +1084,8 @@ for j = 1:length(Subjects)
     StrideTotalTable(k).y5 = Total(5).UMB_Work.Stride_Tot(1,1,j);
     
     % Hip
+    DS1HipTable(k).Subject = Subjects(j).name;
+    DS1HipTable(k).Joint = 'Hip';
     DS1HipTable(k).y1 = Hip(1).UMB_Work.DS1_Tot(1,1,j);
     DS1HipTable(k).y2 = Hip(2).UMB_Work.DS1_Tot(1,1,j);
     DS1HipTable(k).y3 = Hip(3).UMB_Work.DS1_Tot(1,1,j);
@@ -1131,6 +1133,8 @@ for j = 1:length(Subjects)
     StrideHipTable(k).y5 = Hip(5).UMB_Work.Stride_Tot(1,1,j);
     
     % knee
+    DS1KneeTable(k).Subject = Subjects(j).name;
+    DS1KneeTable(k).Joint = 'Knee';
     DS1KneeTable(k).y1 = Knee(1).UMB_Work.DS1_Tot(1,1,j);
     DS1KneeTable(k).y2 = Knee(2).UMB_Work.DS1_Tot(1,1,j);
     DS1KneeTable(k).y3 = Knee(3).UMB_Work.DS1_Tot(1,1,j);
@@ -1229,168 +1233,527 @@ for j = 1:length(Subjects)
     k = k+1;
 end
 
+% Normality Tests
+% Ahmed BenSaïda (2020). Shapiro-Wilk and Shapiro-Francia normality tests. 
+% (https://www.mathworks.com/matlabcentral/fileexchange/13964-shapiro-wilk-and-shapiro-francia-normality-tests), 
+% MATLAB Central File Exchange. Retrieved December 15, 2020.
+addpath(genpath('BatchOpenSim/PostProcessingFxns/swtest')); 
+n = 5;
+mkr = 12; 
+StrideTimeFig = figure('Position',[100 100 1000 400]); 
+txt = 18; 
+
 % stride times
 StrideTimetable = struct2table(ST); 
 [rm.StrideTime] = fitrm(StrideTimetable, 'y1-y5 ~ 1');
 ranovatbl.StrideTime = ranova(rm.StrideTime);
 MC.StrideTime = multcompare(rm.StrideTime, 'Time', 'ComparisonType', 'lsd');
+disp('Stride Time Avg = '); 
+mean(table2array(StrideTimetable), 1)
+disp('Stride Time Std = '); 
+std(table2array(StrideTimetable), 1)
+H = zeros(1, n); 
+for i = 1:n
+    H(i) = swtest(table2array(StrideTimetable(:,i)));
+end
+disp('Stride Time Normality = '); 
+disp(H);
+x = ones(1,12); 
+subplot(151); hold on; 
+plot(x, [ST.y1], '.', 'MarkerSize',mkr, 'Color',TotalColors(1,:)); 
+plot(x*2, [ST.y2], '.', 'MarkerSize',mkr, 'Color',TotalColors(2,:)); 
+plot(x*3, [ST.y3], '.', 'MarkerSize',mkr, 'Color',TotalColors(3,:)); 
+plot(x*4, [ST.y4], '.', 'MarkerSize',mkr, 'Color',TotalColors(4,:)); 
+plot(x*5, [ST.y5], '.', 'MarkerSize',mkr, 'Color',TotalColors(5,:)); 
+title('Stride TIme'); 
+xlim([0.5 5.5]); 
+ylim([0.5 1.5]); 
+ylabel('s'); 
+ax = gca; 
+ax.XTickLabel = {'-40','-20','Norm','+20','+40'};
+ax.YTick = [0.5 0.75 1 1.25 1.5]; 
+text(1,max([ST.y1]) + 0.1, '*', 'FontSize', txt, 'Color',TotalColors(1,:), 'HorizontalAlignment','center'); 
+text(2,max([ST.y2]) + 0.1, '*', 'FontSize', txt, 'Color',TotalColors(2,:), 'HorizontalAlignment','center'); 
+text(5,max([ST.y5]) + 0.1, '*', 'FontSize', txt, 'Color',TotalColors(5,:), 'HorizontalAlignment','center'); 
 
-% DS1
 DS1table = struct2table(DS1); 
 [rm.DS1] = fitrm(DS1table, 'y1-y5 ~ 1');
 ranovatbl.DS1 = ranova(rm.DS1);
 MC.DS1 = multcompare(rm.DS1, 'Time', 'ComparisonType', 'lsd');
+disp('DS1 Time Avg = '); 
+mean(table2array(DS1table), 1)
+disp('DS1 Time Std = '); 
+std(table2array(DS1table), 1)
+H = zeros(1, n); 
+for i = 1:n
+    H(i) = swtest(table2array(DS1table(:,i)));
+end
+disp('DS1 Time Normality = '); 
+disp(H);
+subplot(152); hold on; 
+plot(x, [DS1.y1], '.', 'MarkerSize',mkr, 'Color',TotalColors(1,:)); 
+plot(x*2, [DS1.y2], '.', 'MarkerSize',mkr, 'Color',TotalColors(2,:)); 
+plot(x*3, [DS1.y3], '.', 'MarkerSize',mkr, 'Color',TotalColors(3,:)); 
+plot(x*4, [DS1.y4], '.', 'MarkerSize',mkr, 'Color',TotalColors(4,:)); 
+plot(x*5, [DS1.y5], '.', 'MarkerSize',mkr, 'Color',TotalColors(5,:)); 
+text(4,max([DS1.y4]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(4,:), 'HorizontalAlignment','center'); 
+text(5,max([DS1.y5]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(5,:), 'HorizontalAlignment','center'); 
+title({'Double Support'; 'Leading Limb'}); 
+xlim([0.5 5.5]); 
+ylim([0.1 0.25]); 
+ylabel('% Gait Cycle'); 
+ax = gca; 
+ax.XTickLabel = {'-40','-20','Norm','+20','+40'};
+ax.YTickLabel = [10 15 20 25];
 
-% sing sup
+
 SingSuptable = struct2table(SingSup); 
 [rm.SingSup] = fitrm(SingSuptable, 'y1-y5 ~ 1');
 ranovatbl.SingSup = ranova(rm.SingSup);
 MC.SingSup = multcompare(rm.SingSup, 'Time', 'ComparisonType', 'lsd');
+disp('SingSup Time Avg = '); 
+mean(table2array(SingSuptable), 1)
+disp('SingSupTime Std = '); 
+std(table2array(SingSuptable), 1)
+H = zeros(1, n); 
+for i = 1:n
+    H(i) = swtest(table2array(SingSuptable(:,i)));
+end
+disp('SingSup Time Normality = '); 
+disp(H);
+subplot(153); hold on; 
+plot(x, [SingSup.y1], '.', 'MarkerSize',mkr, 'Color',TotalColors(1,:)); 
+plot(x*2, [SingSup.y2], '.', 'MarkerSize',mkr, 'Color',TotalColors(2,:)); 
+plot(x*3, [SingSup.y3], '.', 'MarkerSize',mkr, 'Color',TotalColors(3,:)); 
+plot(x*4, [SingSup.y4], '.', 'MarkerSize',mkr, 'Color',TotalColors(4,:)); 
+plot(x*5, [SingSup.y5], '.', 'MarkerSize',mkr, 'Color',TotalColors(5,:)); 
+text(4,max([SingSup.y4]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(4,:), 'HorizontalAlignment','center'); 
+text(5,max([SingSup.y5]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(5,:), 'HorizontalAlignment','center'); 
+title('Single Limb Support'); 
+xlim([0.5 5.5]); 
+ylim([0.25 0.4]); 
+ylabel('% Gait Cycle'); 
+ax = gca; 
+ax.XTickLabel = {'-40','-20','Norm','+20','+40'};
+ax.YTickLabel = [25 30 35 40];
 
-% DS2
 DS2table = struct2table(DS2); 
 [rm.DS2] = fitrm(DS2table, 'y1-y5 ~ 1');
 ranovatbl.DS2 = ranova(rm.DS2);
 MC.DS2 = multcompare(rm.DS2, 'Time', 'ComparisonType', 'lsd');
+disp('DS2 Time Avg = '); 
+mean(table2array(DS2table), 1)
+disp('DS2 Time Std = '); 
+std(table2array(DS2table), 1)
+H = zeros(1, n); 
+for i = 1:n
+    H(i) = swtest(table2array(DS2table(:,i)));
+end
+disp('DS2 Time Normality = '); 
+disp(H);
+subplot(154); hold on; 
+plot(x, [DS2.y1], '.', 'MarkerSize',mkr, 'Color',TotalColors(1,:)); 
+plot(x*2, [DS2.y2], '.', 'MarkerSize',mkr, 'Color',TotalColors(2,:)); 
+plot(x*3, [DS2.y3], '.', 'MarkerSize',mkr, 'Color',TotalColors(3,:)); 
+plot(x*4, [DS2.y4], '.', 'MarkerSize',mkr, 'Color',TotalColors(4,:)); 
+plot(x*5, [DS2.y5], '.', 'MarkerSize',mkr, 'Color',TotalColors(5,:)); 
+text(4,max([DS2.y4]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(4,:), 'HorizontalAlignment','center'); 
+text(5,max([DS2.y5]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(5,:), 'HorizontalAlignment','center'); 
+title({'Double Support'; 'Trailing Limb'}); 
+xlim([0.5 5.5]); 
+ylim([0.1 0.25]); 
+ylabel('% Gait Cycle'); 
+ax = gca; 
+ax.XTickLabel = {'-40','-20','Norm','+20','+40'};
+ax.YTickLabel = [10 15 20 25];
 
-% swing
 Swingtable = struct2table(Swing); 
 [rm.Swing] = fitrm(Swingtable, 'y1-y5 ~ 1');
 ranovatbl.Swing = ranova(rm.Swing);
 MC.Swing = multcompare(rm.Swing, 'Time', 'ComparisonType', 'lsd');
+disp('Swing Time Avg = '); 
+mean(table2array(Swingtable), 1)
+disp('Swing Time Std = '); 
+std(table2array(Swingtable), 1)
+H = zeros(1, n); 
+for i = 1:n
+    H(i) = swtest(table2array(Swingtable(:,i)));
+end
+disp('Swing Time Normality = '); 
+disp(H);
+subplot(155); hold on; 
+plot(x, [Swing.y1], '.', 'MarkerSize',mkr, 'Color',TotalColors(1,:)); 
+plot(x*2, [Swing.y2], '.', 'MarkerSize',mkr, 'Color',TotalColors(2,:)); 
+plot(x*3, [Swing.y3], '.', 'MarkerSize',mkr, 'Color',TotalColors(3,:)); 
+plot(x*4, [Swing.y4], '.', 'MarkerSize',mkr, 'Color',TotalColors(4,:)); 
+plot(x*5, [Swing.y5], '.', 'MarkerSize',mkr, 'Color',TotalColors(5,:)); 
+text(4,max([Swing.y4]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(4,:), 'HorizontalAlignment','center'); 
+text(5,max([Swing.y5]) + 0.015, '*', 'FontSize', txt, 'Color',TotalColors(5,:), 'HorizontalAlignment','center'); 
+title('Swing*'); 
+xlim([0.5 5.5]); 
+ylim([0.25 0.4]); 
+ylabel('% Gait Cycle'); 
+ax = gca; 
+ax.XTickLabel = {'-40','-20','Norm','+20','+40'};
+ax.YTickLabel = [25 30 35 40];
 
-
+% ---------------------------------------------------------------
 % met cost
 MetabolicCostTable = struct2table(MetabolicCost); 
 [rm.MetCost] = fitrm(MetabolicCostTable, 'y1-y5 ~ 1');
 ranovatbl.MetCost = ranova(rm.MetCost);
 MC.MetCost = multcompare(rm.MetCost, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 1:n
+    H(i) = swtest(table2array(MetabolicCostTable(:,i)));
+end
+disp('MetCost Normality = '); 
+disp(H); 
 
 % Total
 DS1Totaltable = struct2table(DS1TotalTable);
 [rm.DS1Total] = fitrm(DS1Totaltable, 'y1-y5 ~ 1');
 ranovatbl.DS1Total = ranova(rm.DS1Total);
 MC.DS1Total = multcompare(rm.DS1Total, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS1Totaltable(:,i)));
+end
+disp('DS1 Total Normality = '); 
+disp(H(3:7)); 
 
 SingSupTotaltable = struct2table(SingSupTotalTable);
 [rm.SingSupTotal] = fitrm(SingSupTotaltable, 'y1-y5~1');
 [ranovatbl.SingSupTotal] = ranova(rm.SingSupTotal);
 MC.SingSupTotal = multcompare(rm.SingSupTotal, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SingSupTotaltable(:,i)));
+end
+disp('SingSup Total Normality = '); 
+disp(H(3:7)); 
 
 DS2Totaltable = struct2table(DS2TotalTable);
 [rm.DS2Total] = fitrm(DS2Totaltable, 'y1-y5~1');
 [ranovatbl.DS2Total] = ranova(rm.DS2Total);
 MC.DS2Total = multcompare(rm.DS2Total, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS2Totaltable(:,i)));
+end
+disp('DS2 Total Normality = '); 
+disp(H(3:7)); 
 
 SwingTotaltable = struct2table(SwingTotalTable);
 [rm.SwingTotal] = fitrm(SwingTotaltable, 'y1-y5~1');
 [ranovatbl.SwingTotal] = ranova(rm.SwingTotal);
 MC.SwingTotal = multcompare(rm.SwingTotal, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SwingTotaltable(:,i)));
+end
+disp('Swing Total Normality = '); 
+disp(H(3:7)); 
 
 StanceTotaltable = struct2table(StanceTotalTable);
 [rm.StanceTotal] = fitrm(StanceTotaltable, 'y1-y5~1');
 [ranovatbl.StanceTotal] = ranova(rm.StanceTotal);
 MC.StanceTotal = multcompare(rm.StanceTotal, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StanceTotaltable(:,i)));
+end
+disp('Stance Total Normality = '); 
+disp(H(3:7)); 
 
 StrideTotaltable = struct2table(StrideTotalTable);
 [rm.StrideTotal] = fitrm(StrideTotaltable, 'y1-y5~1');
 [ranovatbl.StrideTotal] = ranova(rm.StrideTotal);
 MC.StrideTotal = multcompare(rm.StrideTotal, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StrideTotaltable(:,i)));
+end
+disp('Stride Total Normality = '); 
+disp(H(3:7)); 
 
 % Hip
 DS1Hiptable = struct2table(DS1HipTable);
 [rm.DS1Hip] = fitrm(DS1Hiptable, 'y1-y5 ~ 1');
 ranovatbl.DS1Hip = ranova(rm.DS1Hip);
 MC.DS1Hip = multcompare(rm.DS1Hip, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS1Hiptable(:,i)));
+end
+disp('DS1 Hip Normality = '); 
+disp(H(3:7)); 
 
 SingSupHiptable = struct2table(SingSupHipTable);
 [rm.SingSupHip] = fitrm(SingSupHiptable, 'y1-y5~1');
 [ranovatbl.SingSupHip] = ranova(rm.SingSupHip);
 MC.SingSupHip = multcompare(rm.SingSupHip, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SingSupHiptable(:,i)));
+end
+disp('SingSup Hip Normality = '); 
+disp(H(3:7)); 
 
 DS2Hiptable = struct2table(DS2HipTable);
 [rm.DS2Hip] = fitrm(DS2Hiptable, 'y1-y5~1');
 [ranovatbl.DS2Hip] = ranova(rm.DS2Hip);
 MC.DS2Hip = multcompare(rm.DS2Hip, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS2Hiptable(:,i)));
+end
+disp('DS2 Hip Normality = '); 
+disp(H(3:7)); 
 
 SwingHiptable = struct2table(SwingHipTable);
 [rm.SwingHip] = fitrm(SwingHiptable, 'y1-y5~1');
 [ranovatbl.SwingHip] = ranova(rm.SwingHip);
 MC.SwingHip = multcompare(rm.SwingHip, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SwingHiptable(:,i)));
+end
+disp('Swing Hip Normality = '); 
+disp(H(3:7)); 
 
 StanceHiptable = struct2table(StanceHipTable);
 [rm.StanceHip] = fitrm(StanceHiptable, 'y1-y5~1');
 [ranovatbl.StanceHip] = ranova(rm.StanceHip);
 MC.StanceHip = multcompare(rm.StanceHip, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StanceHiptable(:,i)));
+end
+disp('Stance Hip Normality = '); 
+disp(H(3:7)); 
 
 StrideHiptable = struct2table(StrideHipTable);
 [rm.StrideHip] = fitrm(StrideHiptable, 'y1-y5~1');
 [ranovatbl.StrideHip] = ranova(rm.StrideHip);
 MC.StrideHip = multcompare(rm.StrideHip, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StrideHiptable(:,i)));
+end
+disp('Stride Hip Normality = '); 
+disp(H(3:7)); 
 
 % Knee
 DS1Kneetable = struct2table(DS1KneeTable);
 [rm.DS1Knee] = fitrm(DS1Kneetable, 'y1-y5 ~ 1');
 ranovatbl.DS1Knee = ranova(rm.DS1Knee);
 MC.DS1Knee = multcompare(rm.DS1Knee, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS1Kneetable(:,i)));
+end
+disp('DS1 Knee Normality = '); 
+disp(H(3:7)); 
 
 SingSupKneetable = struct2table(SingSupKneeTable);
 [rm.SingSupKnee] = fitrm(SingSupKneetable, 'y1-y5~1');
 [ranovatbl.SingSupKnee] = ranova(rm.SingSupKnee);
 MC.SingSupKnee = multcompare(rm.SingSupKnee, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SingSupKneetable(:,i)));
+end
+disp('SingSup Knee Normality = '); 
+disp(H(3:7)); 
 
 DS2Kneetable = struct2table(DS2KneeTable);
 [rm.DS2Knee] = fitrm(DS2Kneetable, 'y1-y5~1');
 [ranovatbl.DS2Knee] = ranova(rm.DS2Knee);
 MC.DS2Knee = multcompare(rm.DS2Knee, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS2Kneetable(:,i)));
+end
+disp('DS2 Knee Normality = '); 
+disp(H(3:7)); 
 
 SwingKneetable = struct2table(SwingKneeTable);
 [rm.SwingKnee] = fitrm(SwingKneetable, 'y1-y5~1');
 [ranovatbl.SwingKnee] = ranova(rm.SwingKnee);
 MC.SwingKnee = multcompare(rm.SwingKnee, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SwingKneetable(:,i)));
+end
+disp('Swing Knee Normality = '); 
+disp(H(3:7)); 
 
 StanceKneetable = struct2table(StanceKneeTable);
 [rm.StanceKnee] = fitrm(StanceKneetable, 'y1-y5~1');
 [ranovatbl.StanceKnee] = ranova(rm.StanceKnee);
 MC.StanceKnee = multcompare(rm.StanceKnee, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StanceKneetable(:,i)));
+end
+disp('Stance Knee Normality = '); 
+disp(H(3:7)); 
 
 StrideKneetable = struct2table(StrideKneeTable);
 [rm.StrideKnee] = fitrm(StrideKneetable, 'y1-y5~1');
 [ranovatbl.StrideKnee] = ranova(rm.StrideKnee);
 MC.StrideKnee = multcompare(rm.StrideKnee, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StrideKneetable(:,i)));
+end
+disp('StrideKnee Normality = '); 
+disp(H(3:7)); 
 
 % Ankle
 DS1Ankletable = struct2table(DS1AnkleTable);
 [rm.DS1Ankle] = fitrm(DS1Ankletable, 'y1-y5~1');
 [ranovatbl.DS1Ankle] = ranova(rm.DS1Ankle);
 MC.DS1Ankle = multcompare(rm.DS1Ankle, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS1Ankletable(:,i)));
+end
+disp('DS1 Ankle Normality = '); 
+disp(H(3:7)); 
 
 SingSupAnkletable = struct2table(SingSupAnkleTable);
 [rm.SingSupAnkle] = fitrm(SingSupAnkletable, 'y1-y5~1');
 [ranovatbl.SingSupAnkle] = ranova(rm.SingSupAnkle);
 MC.SingSupAnkle = multcompare(rm.SingSupAnkle, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SingSupAnkletable(:,i)));
+end
+disp('SingSup Ankle Normality = '); 
+disp(H(3:7)); 
 
 DS2Ankletable = struct2table(DS2AnkleTable);
 [rm.DS2Ankle] = fitrm(DS2Ankletable, 'y1-y5~1');
 [ranovatbl.DS2Ankle] = ranova(rm.DS2Ankle);
 MC.DS2Ankle = multcompare(rm.DS2Ankle, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(DS2Ankletable(:,i)));
+end
+disp('DS2 Ankle Normality = '); 
+disp(H(3:7)); 
 
 SwingAnkletable = struct2table(SwingAnkleTable);
 [rm.SwingAnkle] = fitrm(SwingAnkletable, 'y1-y5~1');
 [ranovatbl.SwingAnkle] = ranova(rm.SwingAnkle);
 MC.SwingAnkle = multcompare(rm.SwingAnkle, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(SwingAnkletable(:,i)));
+end
+disp('Swing Ankle Normality = '); 
+disp(H(3:7)); 
 
 StanceAnkletable = struct2table(StanceAnkleTable);
 [rm.StanceAnkle] = fitrm(StanceAnkletable, 'y1-y5~1');
 [ranovatbl.StanceAnkle] = ranova(rm.StanceAnkle);
 MC.StanceAnkle = multcompare(rm.StanceAnkle, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StanceAnkletable(:,i)));
+end
+disp('Stance Ankle Normality = '); 
+disp(H(3:7)); 
 
 StrideAnkletable = struct2table(StrideAnkleTable);
 [rm.StrideAnkle] = fitrm(StrideAnkletable, 'y1-y5~1');
 [ranovatbl.StrideAnkle] = ranova(rm.StrideAnkle);
 MC.StrideAnkle = multcompare(rm.StrideAnkle, 'Time', 'ComparisonType', 'lsd');
+H = zeros(1, n); 
+for i = 3:n+2
+    H(i) = swtest(table2array(StrideAnkletable(:,i)));
+end
+disp('Stride Ankle Normality = '); 
+disp(H(3:7)); 
 
+% save stride time fig
+print('StrideTimeFig','-djpeg','-r300');
+% close(StrideTimeFig); 
 
+%% Non parametric tests
+% stride measures
+[rmNP.StrideTime_p, ~, rmNP.StrideTime] = friedman(table2array(StrideTimetable),1, 'off'); 
+MCNP.StrideTime = multcompare(rmNP.StrideTime, 'Display','off','CType', 'lsd');
+[ rmNP.DS1_p, ~, rmNP.DS1] = friedman(table2array(DS1table),1, 'off'); 
+MCNP.DS1 = multcompare(rmNP.DS1, 'Display','off','CType', 'lsd');
+[ rmNP.SingSup_p, ~, rmNP.SingSup] = friedman(table2array(SingSuptable),1, 'off'); 
+MCNP.SingSup = multcompare(rmNP.SingSup, 'Display','off','CType', 'lsd');
+[ rmNP.DS2_p, ~, rmNP.DS2] = friedman(table2array(DS2table),1, 'off'); 
+MCNP.DS2 = multcompare(rmNP.DS2, 'Display','off','CType', 'lsd');
+[ rmNP.Swing_p, ~, rmNP.Swing] = friedman(table2array(Swingtable),1, 'off'); 
+MCNP.Swing = multcompare(rmNP.Swing, 'Display','off','CType', 'lsd');
+
+% met cost
+[ rmNP.MetCost_p, ~, rmNP.MetCost] = friedman(table2array(MetabolicCostTable),1, 'off'); 
+MCNP.MetCost = multcompare(rmNP.MetCost, 'Display','off','CType', 'lsd');
+
+% joint level powers
+% total
+[ rmNP.DS1Total_p, ~, rmNP.DS1Total] = friedman(table2array(DS1Totaltable(:,3:7)),1, 'off'); 
+MCNP.DS1Total = multcompare(rmNP.DS1Total, 'Display','off','CType', 'lsd');
+[ rmNP.SingSupTotal_p, ~, rmNP.SingSupTotal] = friedman(table2array(SingSupTotaltable(:,3:7)),1, 'off'); 
+MCNP.SingSupTotal = multcompare(rmNP.SingSupTotal, 'Display','off','CType', 'lsd');
+[ rmNP.DS2Total_p, ~, rmNP.DS2Total] = friedman(table2array(DS2Totaltable(:,3:7)),1, 'off'); 
+MCNP.DS2Total = multcompare(rmNP.DS2Total, 'Display','off','CType', 'lsd');
+[ rmNP.SwingTotal_p, ~, rmNP.SwingTotal] = friedman(table2array(SwingTotaltable(:,3:7)),1, 'off'); 
+MCNP.SwingTotal = multcompare(rmNP.SwingTotal, 'Display','off','CType', 'lsd');
+[ rmNP.StanceTotal_p, ~, rmNP.StanceTotal] = friedman(table2array(StanceTotaltable(:,3:7)),1, 'off'); 
+MCNP.StanceTotal = multcompare(rmNP.StanceTotal, 'Display','off','CType', 'lsd');
+[ rmNP.StrideTotal_p, ~, rmNP.StrideTotal] = friedman(table2array(StrideTotaltable(:,3:7)),1, 'off'); 
+MCNP.StrideTotal = multcompare(rmNP.StrideTotal, 'Display','off','CType', 'lsd');
+% hip
+[ rmNP.DS1Hip_p, ~, rmNP.DS1Hip] = friedman(table2array(DS1Hiptable(:,3:7)),1, 'off'); 
+MCNP.DS1Hip = multcompare(rmNP.DS1Hip, 'Display','off','CType', 'lsd');
+[ rmNP.SingSupHip_p, ~, rmNP.SingSupHip] = friedman(table2array(SingSupHiptable(:,3:7)),1, 'off'); 
+MCNP.SingSupHip = multcompare(rmNP.SingSupHip, 'Display','off','CType', 'lsd');
+[ rmNP.DS2Hip_p, ~, rmNP.DS2Hip] = friedman(table2array(DS2Hiptable(:,3:7)),1, 'off'); 
+MCNP.DS2Hip = multcompare(rmNP.DS2Hip, 'Display','off','CType', 'lsd');
+[ rmNP.SwingHip_p, ~, rmNP.SwingHip] = friedman(table2array(SwingHiptable(:,3:7)),1, 'off'); 
+MCNP.SwingHip = multcompare(rmNP.SwingHip, 'Display','off','CType', 'lsd');
+[ rmNP.StanceHip_p, ~, rmNP.StanceHip] = friedman(table2array(StanceHiptable(:,3:7)),1, 'off'); 
+MCNP.StanceHip = multcompare(rmNP.StanceHip, 'Display','off','CType', 'lsd');
+[ rmNP.StrideHip_p, ~, rmNP.StrideHip] = friedman(table2array(StrideHiptable(:,3:7)),1, 'off'); 
+MCNP.StrideHip = multcompare(rmNP.StrideHip, 'Display','off','CType', 'lsd');
+
+% knee
+[ rmNP.DS1Knee_p, ~, rmNP.DS1Knee] = friedman(table2array(DS1Kneetable(:,3:7)),1, 'off'); 
+MCNP.DS1Knee = multcompare(rmNP.DS1Knee, 'Display','off','CType', 'lsd');
+[ rmNP.SingSupKnee_p, ~, rmNP.SingSupKnee] = friedman(table2array(SingSupKneetable(:,3:7)),1, 'off'); 
+MCNP.SingSupKnee = multcompare(rmNP.SingSupKnee, 'Display','off','CType', 'lsd');
+[ rmNP.DS2Knee_p, ~, rmNP.DS2Knee] = friedman(table2array(DS2Kneetable(:,3:7)),1, 'off'); 
+MCNP.DS2Knee = multcompare(rmNP.DS2Knee, 'Display','off','CType', 'lsd');
+[ rmNP.SwingKnee_p, ~, rmNP.SwingKnee] = friedman(table2array(SwingKneetable(:,3:7)),1, 'off'); 
+MCNP.SwingKnee = multcompare(rmNP.SwingKnee, 'Display','off','CType', 'lsd');
+[ rmNP.StanceKnee_p, ~, rmNP.StanceKnee] = friedman(table2array(StanceKneetable(:,3:7)),1, 'off'); 
+MCNP.StanceKnee = multcompare(rmNP.StanceKnee, 'Display','off','CType', 'lsd');
+[ rmNP.StrideKnee_p, ~, rmNP.StrideKnee] = friedman(table2array(StrideKneetable(:,3:7)),1, 'off'); 
+MCNP.StrideKnee = multcompare(rmNP.StrideKnee, 'Display','off','CType', 'lsd');
+
+% ankle
+[ rmNP.DS1Ankle_p, ~, rmNP.DS1Ankle] = friedman(table2array(DS1Ankletable(:,3:7)),1, 'off'); 
+MCNP.DS1Ankle = multcompare(rmNP.DS1Ankle, 'Display','off','CType', 'lsd');
+[ rmNP.SingSupAnkle_p, ~, rmNP.SingSupAnkle] = friedman(table2array(SingSupAnkletable(:,3:7)),1, 'off'); 
+MCNP.SingSupAnkle = multcompare(rmNP.SingSupAnkle, 'Display','off','CType', 'lsd');
+[ rmNP.DS2Ankle_p, ~, rmNP.DS2Ankle] = friedman(table2array(DS2Ankletable(:,3:7)),1, 'off'); 
+MCNP.DS2Ankle = multcompare(rmNP.DS2Ankle, 'Display','off','CType', 'lsd');
+[ rmNP.SwingAnkle_p, ~, rmNP.SwingAnkle] = friedman(table2array(SwingAnkletable(:,3:7)),1, 'off'); 
+MCNP.SwingAnkle = multcompare(rmNP.SwingAnkle, 'Display','off','CType', 'lsd');
+[ rmNP.StanceAnkle_p, ~, rmNP.StanceAnkle] = friedman(table2array(StanceAnkletable(:,3:7)),1, 'off'); 
+MCNP.StanceAnkle = multcompare(rmNP.StanceAnkle, 'Display','off','CType', 'lsd');
+[ rmNP.StrideAnkle_p, ~, rmNP.StrideAnkle] = friedman(table2array(StrideAnkletable(:,3:7)),1, 'off'); 
+MCNP.StrideAnkle = multcompare(rmNP.StrideAnkle, 'Display','off','CType', 'lsd');
 
 %% Effect Size Statistics
 % eta squared
@@ -1477,11 +1840,6 @@ MC.SwingAnkle_Cd = (nanmean(SwingAnkletable{:,cols}) - nanmean(SwingAnkletable{:
     / nanstd(SwingAnkletable{:,Norm}); 
 MC.StrideAnkle_Cd = (nanmean(StrideAnkletable{:,cols}) - nanmean(StrideAnkletable{:,Norm}) )...
     / nanstd(StrideAnkletable{:,Norm}); 
-
-
-
-
-%% Stride Time Stats
 
 
 
@@ -1694,8 +2052,9 @@ end
     %             text(100, 10, '\bf | Gait Events', 'HorizontalAlignment','right','FontSize',TxtFnt);
 
 subplotsqueeze(CorrVal, 1.05);
-saveas(CorrVal, 'CorrVal.png');
-% saveas(CorrVal, 'CorrVal.pdf');
+% saveas(CorrVal, 'CorrVal.png');
+% print('StrideTimeFig','-dpng','-r300');
+print('CorrVal','-djpeg','-r300');
 
 %% plot BOTH MODELS across the gait cycle 
 % clc; close all;
@@ -2306,7 +2665,7 @@ vline(6, 'k');
 text(MuscLabelCent, 2, '\bf ANKLE MUSCLES', 'Color', AnkleColors(3,:), 'FontSize',12, 'HorizontalAlignment', 'center');
 
 
-% ASTERISKS
+%% Add ASTERISKS
 alpha = 0.05;
 Asterisk = 20; 
 % total
@@ -2332,26 +2691,43 @@ if ranovatbl.StrideTotal.pValue(1) < alpha
         end
     end
 end
-if ranovatbl.DS1Total.pValue(1) < alpha
-    multcomp = MC.DS1Total(MC.DS1Total.Time_1==3,:);
-    for i = 1:4
-        if multcomp.pValue(i) < alpha
-            Log = multcomp.Time_2(i);
-            y = max([Total(Log).UMB_Work.DS1_Tot]) + TopMargin;
-            text(Log+DS1Offset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
-        end
-    end
-end
-if ranovatbl.SingSupTotal.pValue(1) < alpha
-    multcomp = MC.SingSupTotal(MC.SingSupTotal.Time_1==3,:);
-    for i = 1:4
-        if multcomp.pValue(i) < alpha
-            Log = multcomp.Time_2(i);
-            y = max([Total(Log).UMB_Work.SingSup_Tot]) + TopMargin;
-            text(Log+SingSupOffset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
-        end
-    end
-end
+% if ranovatbl.DS1Total.pValue(1) < alpha
+%     multcomp = MC.DS1Total(MC.DS1Total.Time_1==3,:);
+%     for i = 1:4
+%         if multcomp.pValue(i) < alpha
+%             Log = multcomp.Time_2(i);
+%             y = max([Total(Log).UMB_Work.DS1_Tot]) + TopMargin;
+%             text(Log+DS1Offset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+%         end
+%     end
+% end
+Log = 4;
+y = max([Total(Log).UMB_Work.DS1_Tot]) + TopMargin;
+text(Log+DS1Offset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+  Log = 5;
+y = max([Total(Log).UMB_Work.DS1_Tot]) + TopMargin;
+text(Log+DS1Offset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+
+% if ranovatbl.SingSupTotal.pValue(1) < alpha
+%     multcomp = MC.SingSupTotal(MC.SingSupTotal.Time_1==3,:);
+%     for i = 1:4
+%         if multcomp.pValue(i) < alpha
+%             Log = multcomp.Time_2(i);
+%             y = max([Total(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+%             text(Log+SingSupOffset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+%         end
+%     end
+% end
+Log = 1;
+y = max([Total(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+text(Log+SingSupOffset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+Log = 4;
+y = max([Total(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+text(Log+SingSupOffset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+Log = 5;
+y = max([Total(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+text(Log+SingSupOffset, y, '*', 'Color', TotalColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+
 if ranovatbl.DS2Total.pValue(1) < alpha
     multcomp = MC.DS2Total(MC.DS2Total.Time_1==3,:);
     for i = 1:4
@@ -2386,16 +2762,23 @@ if ranovatbl.StrideHip.pValue(1) < alpha
         end
     end
 end
-if ranovatbl.DS1Hip.pValue(1) < alpha
-    multcomp = MC.DS1Hip(MC.DS1Hip.Time_1==3,:);
-    for i = 1:4
-        if multcomp.pValue(i) < alpha
-            Log = multcomp.Time_2(i);
-            y = max([Hip(Log).UMB_Work.DS1_Tot]) + TopMargin;
-            text(Log+DS1Offset, y, '*', 'Color', HipColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
-        end
-    end
-end
+% if ranovatbl.DS1Hip.pValue(1) < alpha
+%     multcomp = MC.DS1Hip(MC.DS1Hip.Time_1==3,:);
+%     for i = 1:4
+%         if multcomp.pValue(i) < alpha
+%             Log = multcomp.Time_2(i);
+%             y = max([Hip(Log).UMB_Work.DS1_Tot]) + TopMargin;
+%             text(Log+DS1Offset, y, '*', 'Color', HipColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+%         end
+%     end
+% end
+Log = 1;
+y = max([Hip(Log).UMB_Work.DS1_Tot]) + TopMargin;
+text(Log+DS1Offset, y, '*', 'Color', HipColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+Log = 2;
+y = max([Hip(Log).UMB_Work.DS1_Tot]) + TopMargin;
+text(Log+DS1Offset, y, '*', 'Color', HipColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+
 if ranovatbl.SingSupHip.pValue(1) < alpha
     multcomp = MC.SingSupHip(MC.SingSupHip.Time_1==3,:);
     for i = 1:4
@@ -2450,16 +2833,26 @@ if ranovatbl.DS1Knee.pValue(1) < alpha
         end
     end
 end
-if ranovatbl.SingSupKnee.pValue(1) < alpha
-    multcomp = MC.SingSupKnee(MC.SingSupKnee.Time_1==3,:);
-    for i = 1:4
-        if multcomp.pValue(i) < alpha
-            Log = multcomp.Time_2(i);
-            y = max([Knee(Log).UMB_Work.SingSup_Tot]) + TopMargin;
-            text(Log+SingSupOffset, y, '*', 'Color', KneeColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
-        end
-    end
-end
+% if ranovatbl.SingSupKnee.pValue(1) < alpha
+%     multcomp = MC.SingSupKnee(MC.SingSupKnee.Time_1==3,:);
+%     for i = 1:4
+%         if multcomp.pValue(i) < alpha
+%             Log = multcomp.Time_2(i);
+%             y = max([Knee(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+%             text(Log+SingSupOffset, y, '*', 'Color', KneeColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+%         end
+%     end
+% end
+Log = 1;
+y = max([Knee(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+text(Log+SingSupOffset, y, '*', 'Color', KneeColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+Log = 4;
+y = max([Knee(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+text(Log+SingSupOffset, y, '*', 'Color', KneeColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+Log = 5;
+y = max([Knee(Log).UMB_Work.SingSup_Tot]) + TopMargin;
+text(Log+SingSupOffset, y, '*', 'Color', KneeColors(Log,:), 'FontSize', Asterisk, 'HorizontalAlignment', 'center');
+
 if ranovatbl.DS2Knee.pValue(1) < alpha
     multcomp = MC.DS2Knee(MC.DS2Knee.Time_1==3,:);
     for i = 1:4
@@ -2584,9 +2977,9 @@ ax = gca;
 ax.YColor = 'k';
 
 subplotsqueeze(CycleEnergyCostsUMB, 1.12);
-saveas(CycleEnergyCostsUMB, 'CycleEnergyCostsUMB.png');
+% saveas(CycleEnergyCostsUMB, 'CycleEnergyCostsUMB.png');
 % saveas(CycleEnergyCostsUMB, 'CycleEnergyCostsUMB.pdf');
-
+print('CycleEnergyCostsUMB','-djpeg','-r300');
 
 
 %% plot joint level curves 
@@ -2707,7 +3100,7 @@ save('MuscleMetCosts.mat','MuscleMet');
 % {'semimem','semiten','bifemlh','bifemsh','sar','add_long','add_brev','tfl','pect','grac','iliacus','psoas','quad_fem','gem','peri','rect_fem','vas_med','vas_int','vas_lat','med_gas','lat_gas','soleus','tib_post','flex_dig','flex_hal','tib_ant','per_brev','per_long','per_tert','ext_dig','ext_hal','ercspn','intobl','extobl','glut_med','glut_min','glut_max','add_mag'}
 
 %% Import muscle table after python
-MetSPM = importdata('C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts\MuscleMetCostsSPM.csv');
+MetSPM = importdata('C:\Users\richa\Documents\Packages\OpenSim\Scripts\MuscleMetCostsSPM.csv');
 
 % determine top 18 muscles to plot
 [SUM, I] = sort(sum(Muscles(3).UMB_CombMuscleAvg, 1)); 
@@ -3168,20 +3561,21 @@ legend([Pl(5).C, Pl(4).C, Pl(3).C, Pl(2).C, Pl(1).C], Conditions, 'Location','Be
 
 subplotsqueeze(MuscleMetCosts, 1.12);
 
-saveas(MuscleMetCosts, 'MuscleMetCosts.png'); 
+% saveas(MuscleMetCosts, 'MuscleMetCosts.png'); 
 % saveas(MuscleMetCosts, 'MuscleMetCosts.pdf'); 
+print('MuscleMetCosts','-djpeg','-r300');
 
 
 %% Check other Outputs
 
-ResultsFolder = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts\CMC_Results\ActuatorForces';
+ResultsFolder = 'C:\Users\richa\Documents\Packages\OpenSim\Scripts\CMC_Results\ActuatorForces';
 [Actuators, Subjects] = CheckActuators(ResultsFolder, Subjects, 'No', 'No', 'Yes');
 
-ResultsFolder = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts\CMC_Results\MuscleControls';
+ResultsFolder = 'C:\Users\richa\Documents\Packages\OpenSim\Scripts\CMC_Results\MuscleControls';
 [Activations, Subjects] = CheckActivations(ResultsFolder, Subjects, 'No', 'Yes');
 
 % kinematics
-ResultsFolder = 'C:\Users\richa\Documents\OpenSim 4.0\Metabolix\Scripts\CMC_Results\Kinematics';
+ResultsFolder = 'C:\Users\richa\Documents\Packages\OpenSim\Scripts\CMC_Results\Kinematics';
 [Kinematics, Subjects] = CheckKinematics(ResultsFolder, Subjects, 'No','Yes');
 
 
