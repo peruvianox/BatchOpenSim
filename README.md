@@ -23,10 +23,10 @@
  
 ### Format Input Data
 First, build a BOS database by creating a study folder containing folders for each subject, like this: 
-![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/Study_Folder.PNG)
+![Study Folder](https://github.com/peruvianox/BatchOpenSim/blob/master/doc/Study_Folder.PNG)
 
 Then place all your ANC & TRC files for each trial within the first level of each participant folder. 
-![Input Files](https://github.com/peruvianox/BatchOpenSim/blob/master/Input_Files.PNG)
+![Input Files](https://github.com/peruvianox/BatchOpenSim/blob/master/doc/Input_Files.PNG)
 
 BatchOpenSim will create the *OpenSim folder*, convert all original files to .mot format, and populate the new OpenSim folder with that subject's data. All future modelling results will be saved to each subject's *OpenSim folder*. 
 
@@ -35,10 +35,10 @@ Within the ABL_OpenSim_Setup_Batch matlab script, you'll need your own force pla
 
 ### Data Structure
 BatchOpenSim will save a heirarchical structure containing data for each subject (called *Subjects*), containing its file path, directory information, demographics, and trials completed. 
-![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/Subject_view.png)
+![Subject View](https://github.com/peruvianox/BatchOpenSim/blob/master/doc/Subject_view.png)
 
 Going into each subject's "Trials" data, you can then see its folder, type, associated files, ground reaction forces, temporal spatial data, and other info)
-![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/Trial_view.png)
+![Trial View](https://github.com/peruvianox/BatchOpenSim/blob/master/doc/Trial_view.png)
  
 ### Time Window
 If you are going to calculate muscle-tendon unit control (computed muscle control or static optimization), it is helpful to select a small window of time (<2 seconds) over which to run the simulation. Long windows of processing require substantial computing power and may results may be questionable. CMC and SO require a 0.03 s buffer to determine inital parameters, so we add 0.05 s to the start and end of the selected window. Processing window times are added in the *ABL_OpenSim_SetupBatch.m* file, search for "BestTimes" variable. 
