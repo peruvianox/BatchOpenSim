@@ -16,18 +16,27 @@ for subj = 1:length(Subjects)
     StaticTrials = strcmp({Subjects(subj).Trials.type}, 'static');
     
     % make virtual markers and copy into scale folder
-    StaticMarkerFile = strcat(Subjects(subj).Folders.OpenSimFolder, '\', ...
-        Subjects(subj).Trials(StaticTrials).files.OpenSimTRC); 
-    if exist(StaticMarkerFile, 'file') == 0
+    useHJC = 1;
+    if useHJC == 1
         StaticMarkerFile = strcat(Subjects(subj).Folders.path, '\HJC\', ...
-        Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4),'_hjc.trc'); 
+            Subjects(subj).Trials(StaticTrials).files.TRC(1:end-4),'_hjc.trc');
+    else
+        StaticMarkerFile = strcat(Subjects(subj).Folders.OpenSimFolder, '\', ...
+            Subjects(subj).Trials(StaticTrials).files.OpenSimTRC);
     end
     StaticVirtualFile = [ScaleFolder '\' Subjects(subj).Trials(StaticTrials).files.OpenSimTRC(1:end-4) '_Virtual.trc'];
     Osim.MakeVirtualMkr(StaticMarkerFile, StaticVirtualFile);
     
     disp(strcat('Scaling ', Subjects(subj).name));
-    
     cd(ScaleFolder);
+    
+    % add mass if not defined
+    if isempty(Subjects(subj).Demo)
+        fn = [Subjects(subj).name '_Info.csv'];
+        T = readtable(fn);
+        r = contains(T{:,1}, 'Mass');
+        Subjects(subj).Demo.mass = str2double(char(T{r, 2}));
+    end
     
     
     %% Prep To Scale - Define inputs & outputs
@@ -43,8 +52,6 @@ for subj = 1:length(Subjects)
     % Load the model and initialize
     model = Model(fullfile(Orig.Model));
     model.initSystem();
-    
-
     
     % copy over original markerset file
     Orig.MkrSetFile = strcat(GenericFilePath, '\',...

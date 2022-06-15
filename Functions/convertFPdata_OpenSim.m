@@ -11,63 +11,19 @@ function [mass, FPused, files, directoryf, Analog] = convertFPdata_OpenSim(input
 % edited by Ricky Pimentel October 2019
 % added comments and split code into functional sections to improve readability
 
-%% Input preferences
-narg = nargin;
-if narg < 1
-    disp('Select Files for force plate.');
-    [files,directoryf]=uigetfile('*.anc','Select Files for force plate','multiselect','on');
-else
-    files = input_file;
-    directoryf = directory;
-end
 
 %% Check for FPcal file otherwise load one in selected directory
-if narg >= 2
+% if narg >= 2
     % Load FPcal_file
     %     [S,pos,origin,R] = load_fpcal(FPcal_file);
     
-    % define FPcal values from loaded structure
-    S = FPcal_data.S;
-    pos = FPcal_data.pos;
-    origin = FPcal_data.origin;
-    R = FPcal_data.R;
-    
-    % S       forceplate calibration matrices, is 6x6xn, where n is the #
-    %         of forceplates
-    % pos     position vectors (specified in m) to the top center of the forceplates in
-    %         the motion analysis reference frame
-    % origin  origin of the transducer relative to the top center of the
-    %         forceplate (specified in m)
-    % R       transformation matrix to convert from the forceplate
-    %         reference frame to the motion capture reference frame
-else
-    % Loads .cal file in current directory
-    [S,pos,origin,R] = load_fpcal('forcepla.cal');
-end
+% define FPcal values from loaded structure
+S = FPcal_data.S;
+pos = FPcal_data.pos;
+origin = FPcal_data.origin;
+R = FPcal_data.R;
 
-%% Check for directory input otherwise ask for one
-% if narg >= 3
-% else
-%     %Ask user for the directory
-%     directory = input('Enter directory where file will be created ', 's');
-% end
-
-%% Check for zero file input otherwise check if one is needed
-% if narg >= 4
-%     % Load zero file
-%     [~, ~, ~, ~, ~, ~, voltdataz]=load_zero(zero_file);
-%     mean_zero = mean(voltdataz(:,1:size(voltdataz,2)));
-% else
-%     % Ask user if they want to use zero file
-%     %     zero = input('Do you want to use a zero file (y/n)', 's');
-%     zero='n';
-%     %     gait = input('Are you analyzing running using 2 belts (y/n)', 's');
-%     if zero == 'y'
-%         % Load zero file
-%         [~, ~, ~, ~, ~, voltdataz]=load_anc();
-%         mean_zero = mean(voltdataz(:,1:size(voltdataz,2)));
-%     end
-% end
+files = input_file; 
 
 %% Fy threshold value to eliminate undefined COP Calulations
 fythresh = 10;
@@ -125,7 +81,7 @@ for w = 1:loop_index
         s = 1; % start frame
         window = s:s+(3/T); % next 3 seconds
         LW = 2; % set line width
-        %     time(window) % uncommen to display time window plotted in command window
+        %     time(window) % uncomment to display time window plotted in command window
         disp_name = strrep(input_file, '_', ' ');
         
         % plot filtering comparison

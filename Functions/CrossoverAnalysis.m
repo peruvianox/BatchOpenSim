@@ -27,27 +27,29 @@ for i = find(Index)
     
     % load GRF data if the field doesnt exist in Trials structure
     % or if the structure is empty for Trial of interest
-    if ~isfield(Trials(i), 'GRF')
-        if contains(Trials(i).files.OpenSimGRF, '.mot') == 0
-            Trials(i).GRF = LoadGRF(Trials(i).files.OpenSimGRF, 0);
+    if ~isfield(Trials(i), 'GRF') || isempty(Trials(i).GRF)
+        if contains(Trials(i).files.OpenSimGRF, '.mot')
+%             GRF.FileName = LoadGRF(Trials(i).files.OpenSimGRF, 0);
+            GRF.FileName = Trials(i).files.OpenSimGRF;
         else
             GRF.FileName = [Trials(i).name 'GRF.mot'];
-            grf = Osim.readMOT(GRF.FileName);
-            GRF.ColHeaders = grf.Properties.VariableNames;
-            GRF.AllData = table2array(grf);
-            Trials(i).GRF = GRF;
         end
-    elseif isempty(Trials(i).GRF)
-        if contains(Trials(i).files.OpenSimGRF, '.mot') == 0
-            Trials(i).GRF = LoadGRF(Trials(i).files.OpenSimGRF, 0);
-        else
-%             GRF.FileName = [Trials(i).name 'GRF.mot'];
-            GRF.FileName = Trials(i).files.OpenSimGRF;
-            grf = Osim.readMOT(GRF.FileName);
-            GRF.ColHeaders = grf.Properties.VariableNames;
-            GRF.AllData = table2array(grf);
-            Trials(i).GRF = GRF;
-        end
+        grf = Osim.readMOT(GRF.FileName);
+        GRF.ColHeaders = grf.Properties.VariableNames;
+        GRF.AllData = table2array(grf);
+        Trials(i).GRF = GRF;
+
+%     elseif 
+%         if contains(Trials(i).files.OpenSimGRF, '.mot') == 0
+%             Trials(i).GRF = LoadGRF(Trials(i).files.OpenSimGRF, 0);
+%         else
+% %             GRF.FileName = [Trials(i).name 'GRF.mot'];
+%             GRF.FileName = Trials(i).files.OpenSimGRF;
+%             grf = Osim.readMOT(GRF.FileName);
+%             GRF.ColHeaders = grf.Properties.VariableNames;
+%             GRF.AllData = table2array(grf);
+%             Trials(i).GRF = GRF;
+%         end
     end
     
     % get temporal spatial data
