@@ -53,20 +53,14 @@ Scale each model to match each subjects size, using marker locations to scale ea
 #### Inverse Kinematics
 Fit the scaled model to recorded marker trajectories for each trial. 
 
+#### Inverse Dynamics
+Calculates Joint moments during each trial
+
 #### Residual Reduction Algorithm
 Align ground reaction forces with body dynamics during recorded motions in an iterative fashion. 
 
 #### Computed Muscle Control
 Calculate the muscle-tendon unit forces required to generate the recorded movement. 
-
-#### Muscle Analysis
-more info coming soon
-
-#### Static Optimization
-more info coming soon
-
-#### Inverse Dynamics
-more info coming soon
 
 ## Major BOS Functions
 - ABL_Batch_OpenSim.m - parent code for batch processing multiple subjects and trails in OpenSim (including scaling, inverse kinematics, residual reduction algorithm, computed muscle control, static optimization, muscle analysis, and inverse dynamics)
